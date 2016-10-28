@@ -143,5 +143,6 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void toMainActivity() {
         Intent intent = new Intent(getContext(), MainActivity.class);
         startActivity(intent);
+        getActivity().finish();
     }
 }

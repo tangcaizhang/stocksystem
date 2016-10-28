@@ -5,4 +5,6 @@ public final class ApiUrlConst {
 
     public static final String SERVER_LOGIN = BASE_URL + "/login";
 
+    public static final String SERVER_Register = BASE_URL + "/register";
+
 }

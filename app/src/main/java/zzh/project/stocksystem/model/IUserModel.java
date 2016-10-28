@@ -1,10 +1,13 @@
 package zzh.project.stocksystem.model;
 
-public interface IUserModel {
-    interface LoginCallback {
-        void onLoginSuccess();
+import zzh.project.stocksystem.bean.UserBean;
+import zzh.project.stocksystem.domain.AccessToken;
 
-        void onLoginError(String errMsg);
+public interface IUserModel {
+    interface Callback<T1, T2> {
+        void onSuccess(T1 t1);
+
+        void onError(T2 t2);
     }
 
     // 获取历史用户名
@@ -14,11 +17,14 @@ public interface IUserModel {
     void setHistoryUser(String history);
 
     // 登陆
-    void login(String username, String password, LoginCallback callback);
+    void login(String username, String password, Callback<AccessToken, String> callback);
+
+    // 登陆
+    void register(UserBean userBean, Callback<Void, String> callback);
 
     // 检测access_token
     boolean checkAccessToken();
 
-    // 获取access_token
-    String getAccessToken();
+    // 保存access_token
+    void saveAccessToken(AccessToken accessToken);
 }

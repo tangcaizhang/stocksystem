@@ -1,6 +1,8 @@
 package zzh.project.stocksystem.bean;
 
-public class User {
+public class UserBean {
     public String username;
     public String password;
+    public String email;
+    public String nick;
 }

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +16,8 @@ import org.json.JSONObject;
 import zzh.project.stocksystem.ApiUrlConst;
 import zzh.project.stocksystem.MyApplication;
 import zzh.project.stocksystem.ServerErrorCode;
+import zzh.project.stocksystem.bean.UserBean;
+import zzh.project.stocksystem.domain.AccessToken;
 import zzh.project.stocksystem.helper.MsgHelper;
 import zzh.project.stocksystem.sp.UserSp;
 import zzh.project.stocksystem.volley.FastVolley;
@@ -44,25 +48,31 @@ public class UserModel implements IUserModel {
     }
 
     @Override
-    public void login(String username, String password, final LoginCallback callback) {
+    public void login(String username, String password, final Callback<AccessToken, String> callback) {
         mFastVolley.cancelAll(HASHCODE, "login");
         try {
             JSONObject reqParams = new JSONObject().put("username", username).put("password", password);
             JsonObjectRequest request = new JsonObjectRequest(ApiUrlConst.SERVER_LOGIN, reqParams, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    Log.d(TAG, "response " + response);
+                    Log.d(TAG, "login resp " + response);
                     int errcode = response.optInt("errcode");
-                    if (errcode == ServerErrorCode.RESPONSE_SUCCESS) {
-                        callback.onLoginSuccess();
-                    } else if (errcode == ServerErrorCode.RESPONSE_FAILED) {
-                        callback.onLoginError("用户名或密码不正确");
+                    if (errcode == ServerErrorCode.SUCCESS) {
+                        JSONObject jData = response.optJSONObject("data");
+                        if (jData != null) {
+                            AccessToken accessToken = new AccessToken();
+                            accessToken.accessToken = jData.optString("access_token");
+                            accessToken.expiresIn = jData.optLong("expires");
+                            callback.onSuccess(accessToken);
+                        }
+                    } else if (errcode == ServerErrorCode.PASS_WRONG) {
+                        callback.onError("用户名或密码不正确");
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    callback.onLoginError(MsgHelper.getErrorMsg(error));
+                    callback.onError(MsgHelper.getErrorMsg(error));
                 }
             });
             request.setTag("login");
@@ -73,26 +83,58 @@ public class UserModel implements IUserModel {
     }
 
     @Override
+    public void register(UserBean userBean, final Callback<Void, String> callback) {
+        mFastVolley.cancelAll(HASHCODE, "register");
+        String reqBody = new Gson().toJson(userBean);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, ApiUrlConst.SERVER_Register, reqBody, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                int errcode = response.optInt("errcode");
+                if (errcode == ServerErrorCode.SUCCESS) {
+                    callback.onSuccess(null);
+                } else if (errcode == ServerErrorCode.USERNAME_ALREADY_EXISTS) {
+                    callback.onError("该用户已存在");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(MsgHelper.getErrorMsg(error));
+            }
+        });
+        request.setTag("register");
+        mFastVolley.addShortRequest(HASHCODE, request);
+    }
+
+    @Override
     public void setHistoryUser(String username) {
         mUserSp.setUsername(username);
     }
 
     @Override
     public boolean checkAccessToken() {
-        String accessToken = mUserSp.getAccessToken(null);
-        if (accessToken == null) {
+        AccessToken accessToken = getAccessToken();
+        Log.d(TAG, "access_token -> " + accessToken);
+        if (accessToken.accessToken == null || accessToken.accessToken.isEmpty()) {
             return false;
         }
-        long expiresIn = mUserSp.getExpiresIn(0);
-        if (expiresIn < SystemClock.currentThreadTimeMillis()) {
+        if (accessToken.expiresIn < SystemClock.currentThreadTimeMillis()) {
             return false;
         }
         return true;
     }
 
+    private AccessToken getAccessToken() {
+        AccessToken accessToken = new AccessToken();
+        accessToken.accessToken = mUserSp.getAccessToken(null);
+        accessToken.expiresIn = mUserSp.getExpiresIn(0);
+        return accessToken;
+    }
+
     @Override
-    public String getAccessToken() {
-        return mUserSp.getAccessToken(null);
+    public void saveAccessToken(AccessToken accessToken) {
+        mUserSp.setAccessToken(accessToken.accessToken);
+        mUserSp.setExpiresIn(accessToken.expiresIn);
     }
 
     public void destroy() {

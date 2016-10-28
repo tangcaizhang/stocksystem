@@ -16,6 +16,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url "https://jitpack.io"
+        }
     }
 }
 
@@ -26,7 +29,7 @@ task clean(type: Delete) {
 // Define versions in a single place
 ext {
     // Sdk and tools
-    minSdkVersion = 14
+    minSdkVersion = 15
     targetSdkVersion = 24
     compileSdkVersion = 24
     buildToolsVersion = '24.0.3'

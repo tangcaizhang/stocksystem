@@ -3,7 +3,7 @@ package zzh.project.stocksystem.module.register;
 import zzh.project.stocksystem.module.base.BasePresenter;
 import zzh.project.stocksystem.module.base.BaseView;
 
-public interface RegisterContract {
+interface RegisterContract {
     interface View extends BaseView {
         // 获取用户名
         String getUsername();

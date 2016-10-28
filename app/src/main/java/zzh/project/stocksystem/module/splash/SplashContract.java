@@ -3,7 +3,7 @@ package zzh.project.stocksystem.module.splash;
 import zzh.project.stocksystem.module.base.BasePresenter;
 import zzh.project.stocksystem.module.base.BaseView;
 
-public interface SplashContract {
+interface SplashContract {
     interface Presenter extends BasePresenter {
     }
 
