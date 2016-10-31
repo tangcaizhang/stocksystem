@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.StrictMode;
+import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.disc.impl.TotalSizeLimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -16,12 +17,18 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.utils.L;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.io.File;
 
+import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
+import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.volley.FastVolley;
+
 public class MyApplication extends Application {
-    public static final boolean DEBUG = true;
+    public static final String TAG = MyApplication.class.getSimpleName();
+    public static final boolean DEBUG = EnvConst.DEBUG;
     private static MyApplication sInstance;
 
     public static MyApplication getInstance() {
@@ -33,6 +40,7 @@ public class MyApplication extends Application {
         super.onCreate();
         sInstance = this;
         if (DEBUG) {
+            Log.d(TAG, "onCreate");
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
         }
@@ -42,7 +50,9 @@ public class MyApplication extends Application {
 
     private NetWorkObservable mNetWorkObservable;
 
-    /********************* 初始化网络监听 ***************/
+    /*********************
+     * 初始化网络监听
+     ***************/
     private void initNetWorkStatusObservable() {
         mNetWorkObservable = new NetWorkObservable(this);
     }
@@ -66,7 +76,9 @@ public class MyApplication extends Application {
         }
     }
 
-    /******************* 初始化图片加载 **********************/
+    /*******************
+     * 初始化图片加载
+     **********************/
     private void initImageLoader(Context context) {
         int memoryCacheSize = (int) (Runtime.getRuntime().maxMemory() / 5);
         MemoryCacheAware<String, Bitmap> memoryCache;
@@ -82,7 +94,7 @@ public class MyApplication extends Application {
                 .cacheOnDisc(true)
                 .build();
 
-        File cacheDir = StorageUtils.getOwnCacheDirectory(getApplicationContext(), context.getPackageName()+"/img_cache");
+        File cacheDir = StorageUtils.getOwnCacheDirectory(getApplicationContext(), context.getPackageName() + "/img_cache");
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                 .defaultDisplayImageOptions(defaultOptions)
@@ -97,6 +109,24 @@ public class MyApplication extends Application {
 
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config);
+
+//        if (!DEBUG) {
+            L.disableLogging();
+//        }
     }
 
+    // 回收资源
+    public void destroy() {
+        if (DEBUG) {
+            Log.d(TAG, "onCreate");
+        }
+        if (mNetWorkObservable != null) {
+            mNetWorkObservable.release();
+        }
+        UserModelImpl.getInstance().destroy();
+        StockModelJuheImpl.getInstance().destroy();
+        ImageLoader.getInstance().destroy();
+        FastVolley.getInstance(this).stop();
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
 }

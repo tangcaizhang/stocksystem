@@ -26,8 +26,13 @@
             android:name="design_height"
             android:value="1920" />
 
+        <!-- 聚合api -->
+        <meta-data
+            android:name="juhe_app_key"
+            android:value="" />
+
         <activity
-            android:name="zzh.project.stocksystem.module.splash.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.FullScreen">
             <intent-filter>
@@ -38,16 +43,16 @@
         </activity>
 
         <activity
-            android:name="zzh.project.stocksystem.module.login.LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
 
         <activity
-            android:name="zzh.project.stocksystem.module.main.MainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="zzh.project.stocksystem.module.register.RegisterActivity"
+            android:name=".ui.register.RegisterActivity"
             android:label="注册"
             android:screenOrientation="portrait" />
     </application>

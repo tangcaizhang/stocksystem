@@ -12,6 +12,9 @@ import com.android.volley.toolbox.Volley;
 
 import zzh.project.stocksystem.MyApplication;
 
+/**
+ * Volley的封装工具类
+ */
 public class FastVolley {
 
     static final String TAG = "Volley";

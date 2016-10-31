@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_StockList_Refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_StockList_List"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout>
