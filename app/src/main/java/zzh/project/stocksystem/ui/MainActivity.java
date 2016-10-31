@@ -4,20 +4,21 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import zzh.project.stocksystem.R;
+import zzh.project.stocksystem.ui.base.BaseActivity;
 import zzh.project.stocksystem.ui.favor.FavorFragment;
 import zzh.project.stocksystem.ui.info.InfoFragment;
 import zzh.project.stocksystem.ui.news.NewsFragment;
 import zzh.project.stocksystem.ui.stock.StockFragment;
 import zzh.project.stocksystem.ui.stocktrace.TradeFragment;
 
-public class MainActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
     @BindView(R.id.vp_Main_Content)
     ViewPager mViewPager;
     @BindView(R.id.rg_NavBar)
@@ -37,6 +38,23 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
 
     private void initView(Bundle savedInstanceState) {
         mViewPager.setAdapter(mAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                RadioButton child = (RadioButton) mNavBar.getChildAt(position);
+                child.setChecked(true);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mNavBar.setOnCheckedChangeListener(this);
     }
 
