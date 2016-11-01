@@ -1,20 +1,22 @@
 # StockSystem
-空闲时间维护的个人项目，持续完善中。
+业余时间维护的个人项目，持续完善中。
 
-基于 Material Design 重新设计界面<br />
-基于MVP架构<br />
-股票数据来源聚合API https://www.juhe.cn/docs/api/id/21
+基于 Material Design 重新设计界面 <br />
+基于MVP架构 <br />
+股票数据来源聚合API： https://www.juhe.cn/docs/api/id/21 <br />
+集成极光消息推送（待完善）<br />
 
+后台项目源码 https://github.com/zackzhou915/stocksystem_web
 
 ##Usages
 
 
 ##Screen Shots
 
-<img src="https://github.com/zackzhou915/stocksystem/screenshots/stock_list.png" width = "300" height = "572" alt="s1" align=center />
-<img src="https://github.com/zackzhou915/stocksystem/screenshots/stock_detail.png" width = "300" height = "572" alt="s2" align=center />
-<img src="https://github.com/zackzhou915/stocksystem/screenshots/favor.png" width = "300" height = "572" alt="s3" align=center />
-<img src="https://github.com/zackzhou915/stocksystem/screenshots/self.png" width = "300" height = "572" alt="s4" align=center />
+<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshots/stock_list.png" width = "300" height = "572" alt="s1" align=center />
+<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshots/stock_detail.png" width = "300" height = "572" alt="s2" align=center />
+<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshots/favor.png" width = "300" height = "572" alt="s3" align=center />
+<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshots/self.png" width = "300" height = "572" alt="s4" align=center />
 
 
 ####License
