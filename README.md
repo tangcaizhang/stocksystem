@@ -3,6 +3,7 @@
 
 基于 Material Design 重新设计界面 <br />
 基于MVP架构 <br />
+常用的下拉刷新、上拉加载、轮换图等组件 <br />
 股票数据来源  [聚合API](https://www.juhe.cn/docs/api/id/21) <br />
 集成极光消息推送（待完善）<br />
 
@@ -29,4 +30,3 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
-
