@@ -1,4 +1,4 @@
-package zzh.project.stocksystem.ui.register;
+package zzh.project.stocksystem.ui.stockdetail;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,16 +7,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.zhy.autolayout.AutoLayoutActivity;
-
 import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.ui.base.BaseActivity;
 
-public class RegisterActivity extends BaseActivity {
+public class StockDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.act_base);
+        setContentView(R.layout.act_stock_detail);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -25,7 +23,13 @@ public class RegisterActivity extends BaseActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.contentFrame, new RegisterFragment());
+        StockDetailFragment stockFragment = new StockDetailFragment();
+        if (getIntent() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("gid", getIntent().getStringExtra("gid"));
+            stockFragment.setArguments(bundle);
+        }
+        transaction.add(R.id.contentFrame, stockFragment);
         transaction.commit();
     }
 

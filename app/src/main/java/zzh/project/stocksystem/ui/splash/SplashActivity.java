@@ -12,11 +12,12 @@ import butterknife.ButterKnife;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 import zzh.project.stocksystem.R;
+import zzh.project.stocksystem.ui.base.BaseActivity;
 import zzh.project.stocksystem.ui.login.LoginActivity;
 import zzh.project.stocksystem.ui.MainActivity;
 import zzh.project.stocksystem.util.ToastUtil;
 
-public class SplashActivity extends AppCompatActivity implements SplashContract.View {
+public class SplashActivity extends BaseActivity implements SplashContract.View {
     private SplashContract.Presenter mPresenter;
     private boolean isActive = false;
 

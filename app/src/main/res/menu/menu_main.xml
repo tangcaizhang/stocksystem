@@ -19,7 +19,7 @@
 
     <item
         android:id="@+id/Main_Menu_Search"
-        android:icon="@drawable/ic_search_24dp"
+        android:icon="@drawable/ic_search"
         android:title="搜索"
         app:showAsAction="always" />
 </menu>

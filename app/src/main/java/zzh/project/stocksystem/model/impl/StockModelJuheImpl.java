@@ -57,7 +57,7 @@ public class StockModelJuheImpl implements StockModel {
     public void getDetail(String gid, final Callback2<StockDetailBean, String> callback) {
         String url = null;
         Class respClazz = null;
-        if (gid.startsWith("hs")) {
+        if (gid.startsWith("sh") || gid.startsWith("sz")) {
             url = ApiUrl.STOCK_DETAIL_HS + "?gid=" + gid + "&key=" + mAppKey;
             respClazz = JuheDetailRespHS.class;
         } else if (gid.startsWith("hk")) {
@@ -99,6 +99,7 @@ public class StockModelJuheImpl implements StockModel {
                         JuheDetailRespHS resp = (JuheDetailRespHS) obj;
                         if (resp.resultcode.equals("200")) {
                             bean = new StockDetailBean();
+                            bean.name = resp.result.get(0).data.name;
                             bean.gid = resp.result.get(0).data.gid;
                             bean.increPer = resp.result.get(0).data.increPer;
                             bean.increase = resp.result.get(0).data.increase;
@@ -120,6 +121,7 @@ public class StockModelJuheImpl implements StockModel {
                         JuheDetailRespHK resp = (JuheDetailRespHK) obj;
                         if (resp.resultcode.equals("200")) {
                             bean = new StockDetailBean();
+                            bean.name = resp.result.get(0).data.name;
                             bean.gid = resp.result.get(0).data.gid;
                             bean.increPer = resp.result.get(0).data.limit;
                             bean.increase = resp.result.get(0).data.uppic;
@@ -141,6 +143,7 @@ public class StockModelJuheImpl implements StockModel {
                         JuheDetailRespUSA resp = (JuheDetailRespUSA) obj;
                         if (resp.resultcode.equals("200")) {
                             bean = new StockDetailBean();
+                            bean.name = resp.result.get(0).data.name;
                             bean.gid = resp.result.get(0).data.gid;
                             bean.increPer = resp.result.get(0).data.limit;
                             bean.increase = resp.result.get(0).data.uppic;

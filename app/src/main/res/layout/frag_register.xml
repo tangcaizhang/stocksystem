@@ -69,7 +69,8 @@
             android:hint="密码"
             android:inputType="textPassword"
             android:lines="1"
-            android:maxLength="20" />
+            android:maxLength="20"
+            android:textSize="54px" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -84,7 +85,8 @@
             android:hint="重复密码"
             android:inputType="textPassword"
             android:lines="1"
-            android:maxLength="20" />
+            android:maxLength="20"
+            android:textSize="54px" />
     </android.support.design.widget.TextInputLayout>
 
     <Button

@@ -79,7 +79,9 @@ public class StockFragment extends Fragment {
             public CharSequence getPageTitle(int position) {
                 return mPageTitles[position].name;
             }
+
         });
+        mPager.setOffscreenPageLimit(mPageTitles.length);
         if (getUserVisibleHint()) {
             mTabBar.setVisibility(View.VISIBLE);
         }

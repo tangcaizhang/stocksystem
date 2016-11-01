@@ -49,11 +49,17 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
 
         <activity
             android:name=".ui.register.RegisterActivity"
             android:label="注册"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.stockdetail.StockDetailActivity"
+            android:label="股票详情"
             android:screenOrientation="portrait" />
     </application>
 

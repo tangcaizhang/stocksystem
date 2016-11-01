@@ -1,17 +1,18 @@
 package zzh.project.stocksystem.ui.stock;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhy.adapter.recyclerview.wrapper.LoadMoreWrapper;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.bean.StockBean;
 import zzh.project.stocksystem.bean.StockListType;
 import zzh.project.stocksystem.ui.base.BaseFragment;
+import zzh.project.stocksystem.ui.stockdetail.StockDetailActivity;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
 public class StockListFragment extends BaseFragment implements StockListContract.View {
@@ -82,69 +84,78 @@ public class StockListFragment extends BaseFragment implements StockListContract
     }
 
     private void initView() {
-        mAdapter = new LoadMoreWrapper<ViewHolder>(new RecyclerView.Adapter<ViewHolder>() {
+        StockListAdapter innerAdapter = new StockListAdapter(getContext(), mDatas);
+        innerAdapter.setOnItemClickedListener(new StockListAdapter.OnItemClickedListener() {
             @Override
-            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View root = LayoutInflater.from(getContext()).inflate(R.layout.adapter_stock_item, parent, false);
-                return new ViewHolder(root);
-            }
-
-            @Override
-            public void onBindViewHolder(ViewHolder holder, int position) {
-                StockBean bean = mDatas.get(position);
-                ImageLoader.getInstance().displayImage(bean.thumbUrl, holder.thumb);
-                holder.name.setText(bean.name);
-                holder.price.setText(String.format("最新价格：%s", bean.nowPri));
-                holder.code.setText(String.format("股票代码：%s", bean.gid));
-                holder.increase.setText(String.format("涨幅额：%s", bean.increase));
-                holder.increPer.setText(String.format("涨跌幅：%s%%", bean.increPer));
-            }
-
-            @Override
-            public int getItemCount() {
-                return mDatas.size();
+            public void onItemClicked(int position) {
+                toStockDetailActivity(position);
             }
         });
+        mAdapter = new LoadMoreWrapper<ViewHolder>(innerAdapter);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setLoadMoreView(mLoadMore);
+        mRefreshLayout.setScrollUpChild(mRecyclerView);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.d("StockListFragment", "onRefresh");
                 mPresenter.loadStocks();
             }
         });
         mAdapter.setOnLoadMoreListener(new LoadMoreWrapper.OnLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                mPresenter.loadMore();
+                if (mDatas.size() > 0) {
+                    mPresenter.loadMore();
+                }
             }
         });
     }
 
+    private void toStockDetailActivity(int position) {
+        if (mDatas != null) {
+            StockBean bean = mDatas.get(position);
+            Intent intent = new Intent(getContext(), StockDetailActivity.class);
+            intent.putExtra("gid", bean.gid);
+            startActivity(intent);
+        }
+    }
+
     @Override
     public void showStocks(List<StockBean> stocks) {
-        mDatas = stocks;
-        mAdapter.notifyDataSetChanged();
-        int lastCompVisibleItem = mLayoutManager.findLastCompletelyVisibleItemPosition();
-        if (lastCompVisibleItem != mLayoutManager.getItemCount()) {
-            mAdapter.setLoadMoreView(mLoadMore);
-        } else {
-            mAdapter.setLoadMoreView(null);
-        }
+        Log.d("StockListFragment", "showStocks");
+        mDatas.clear();
+        mDatas.addAll(stocks);
+        mAdapter.showLoadMore();
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void appendStocks(List<StockBean> stocks) {
+        Log.d("StockListFragment", "appendStocks");
         if (stocks == null || stocks.size() == 0) {
-            mAdapter.setLoadMoreView(null);
+            mAdapter.hideLoadMore();
         } else {
             mDatas.addAll(stocks);
         }
-        if (!mRecyclerView.isComputingLayout() && mRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE)
+        if (!mRecyclerView.isComputingLayout() && mRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
             mAdapter.notifyDataSetChanged();
+        } else {
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    mRecyclerView.removeOnScrollListener(this);
+                    mRecyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            });
+        }
     }
 
     @Override

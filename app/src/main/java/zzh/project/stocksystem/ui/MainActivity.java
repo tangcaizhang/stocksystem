@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,6 +18,7 @@ import zzh.project.stocksystem.ui.info.InfoFragment;
 import zzh.project.stocksystem.ui.news.NewsFragment;
 import zzh.project.stocksystem.ui.stock.StockFragment;
 import zzh.project.stocksystem.ui.stocktrace.TradeFragment;
+import zzh.project.stocksystem.util.ToastUtil;
 
 public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
     @BindView(R.id.vp_Main_Content)
@@ -103,5 +105,18 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 break;
         }
         mViewPager.setCurrentItem(pageIndex);
+    }
+
+    long mLastBackPressed = 0;
+
+    @Override
+    public void onBackPressed() {
+        long curTime = System.currentTimeMillis();
+        if ((curTime - mLastBackPressed) >= 2000) {
+            ToastUtil.show("再按一次退出程序", Toast.LENGTH_SHORT);
+            mLastBackPressed = curTime;
+        } else {
+            finish();
+        }
     }
 }

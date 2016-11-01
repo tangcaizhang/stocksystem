@@ -38,6 +38,7 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.0'
     compile 'com.google.code.gson:gson:2.2.2'
+    compile 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
     compile ('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true;
     }

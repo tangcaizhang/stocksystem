@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/Stock_Result_View"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/Stock_Chart"
+                android:layout_width="match_parent"
+                android:layout_height="640px"
+                android:background="@color/lightgrey" />
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/Stock_Chart_Indicator"
+                android:layout_width="200px"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="10px"
+                app:fillColor="@color/colorPrimary"
+                app:strokeColor="@color/colorPrimaryDark" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/Stock_Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64px"
+                android:lines="1"
+                android:textColor="@color/black"
+                android:textSize="56px"
+                tools:text="白云机场" />
+
+            <TextView
+                android:id="@+id/Stock_Price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textColor="@color/green"
+                android:textSize="42px"
+                tools:text="最近价格：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_Increase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textColor="@color/orange"
+                android:textSize="42px"
+                tools:text="涨跌　额：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_IncrePer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textColor="@color/colorPrimary"
+                android:textSize="42px"
+                tools:text="涨跌　幅：0.29％" />
+
+            <TextView
+                android:id="@+id/Stock_CompetitivePri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textSize="42px"
+                tools:text="买　　入：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_ReservePri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textSize="42px"
+                tools:text="卖　　出：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_YestodEndPri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textSize="42px"
+                tools:text="昨　　收：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_TodayStartPri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textSize="42px"
+                tools:text="今　　开：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_TodayMax"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textSize="42px"
+                tools:text="最　　高：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_TodayMin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textSize="42px"
+                tools:text="最　　低：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_TraNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textSize="42px"
+                tools:text="成交数量：13.82" />
+
+            <TextView
+                android:id="@+id/Stock_TraAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16px"
+                android:lines="1"
+                android:textSize="42px"
+                tools:text="成交金额：13.82" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/Stock_Not_Found_View"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:src="@drawable/not_found" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="抱歉，没有找到相关结果"
+            android:textSize="42px" />
+    </LinearLayout>
+</FrameLayout>

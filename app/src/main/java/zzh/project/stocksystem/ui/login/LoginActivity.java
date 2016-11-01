@@ -8,15 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
-import com.zhy.autolayout.AutoLayoutActivity;
-
 import zzh.project.stocksystem.R;
+import zzh.project.stocksystem.ui.base.BaseActivity;
 
-public class LoginActivity extends AutoLayoutActivity {
+public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.atc_base);
+        setContentView(R.layout.act_base);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
