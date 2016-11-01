@@ -4,8 +4,8 @@ package zzh.project.stocksystem.ui.splash;
 import android.os.Handler;
 import android.os.SystemClock;
 
+import zzh.project.stocksystem.model.Callback2;
 import zzh.project.stocksystem.model.impl.UserModelImpl;
-import zzh.project.stocksystem.util.ThreadManager;
 
 public class SplashPresenter implements SplashContract.Presenter {
     private static final String TAG = SplashPresenter.class.getSimpleName();
@@ -35,18 +35,24 @@ public class SplashPresenter implements SplashContract.Presenter {
 
     private void doInit() {
         final long start = SystemClock.currentThreadTimeMillis();
-        ThreadManager.getPool().execute(new Runnable() {
+        mUserModel.checkAccessToken(new Callback2<Void, Void>() {
             @Override
-            public void run() {
-                final boolean validResult = mUserModel.checkAccessToken();
+            public void onSuccess(Void aVoid) {
                 mGoTask = new Runnable() {
                     @Override
                     public void run() {
-                        if (validResult) {
-                            mView.toMainActivity();
-                        } else {
-                            mView.toLoginActivity();
-                        }
+                        mView.toMainActivity();
+                    }
+                };
+                mHandler.postDelayed(mGoTask, 1000 - (SystemClock.currentThreadTimeMillis() - start));
+            }
+
+            @Override
+            public void onError(Void aVoid) {
+                mGoTask = new Runnable() {
+                    @Override
+                    public void run() {
+                        mView.toLoginActivity();
                     }
                 };
                 mHandler.postDelayed(mGoTask, 1000 - (SystemClock.currentThreadTimeMillis() - start));

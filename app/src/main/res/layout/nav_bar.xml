@@ -32,7 +32,7 @@
         android:drawablePadding="16px"
         android:drawableTop="@drawable/ic_choose"
         android:gravity="center"
-        android:text="自选"
+        android:text="关注"
         android:textColor="@color/color_nav_bar_item"
         android:textSize="42px" />
 
@@ -74,7 +74,7 @@
         android:drawablePadding="16px"
         android:drawableTop="@drawable/ic_myl"
         android:gravity="center"
-        android:text="我"
+        android:text="个人"
         android:textColor="@color/color_nav_bar_item"
         android:textSize="42px" />
 

@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -64,6 +67,7 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
         super.onCreate(savedInstanceState);
         mGid = getArguments().getString("gid");
         mPresenter = new StockDetailPresenter(this);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -73,6 +77,12 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
         initView();
         mPresenter.start();
         return root;
+    }
+
+    @Override
+    public void onDetach() {
+        mPresenter.destroy();
+        super.onDetach();
     }
 
     private void initView() {
@@ -146,5 +156,44 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
     @Override
     public String getGid() {
         return mGid;
+    }
+
+    @Override
+    public void showUnFavor() {
+        if (mFavor != null) {
+            mFavor.setTitle("关注");
+            mFavor.setIcon(R.drawable.ic_favor_n);
+        }
+    }
+
+    @Override
+    public void showAlreadyFavor() {
+        if (mFavor != null) {
+            mFavor.setTitle("取消关注");
+            mFavor.setIcon(R.drawable.ic_favor_p);
+        }
+    }
+
+    MenuItem mFavor;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_favor, menu);
+        mFavor = menu.findItem(R.id.Main_Menu_Favor);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.Main_Menu_Favor:
+                if (item.getTitle().equals("取消关注")) {
+                    mPresenter.cancelFavor();
+                } else {
+                    mPresenter.favor();
+                }
+                getActivity().setResult(1); // 操作过
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

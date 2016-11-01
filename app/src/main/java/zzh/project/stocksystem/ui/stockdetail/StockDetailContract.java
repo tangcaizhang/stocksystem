@@ -14,10 +14,22 @@ interface StockDetailContract {
 
         // 股票代号
         String getGid();
+
+        // 显示未关注
+        void showUnFavor();
+
+        // 显示关注
+        void showAlreadyFavor();
     }
 
     interface Presenter extends BasePresenter {
         // 加载股票信息
         void loadStockDetail();
+
+        // 关注
+        void favor();
+
+        // 取消关注
+        void cancelFavor();
     }
 }

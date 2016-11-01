@@ -50,6 +50,23 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             public void onPageSelected(int position) {
                 RadioButton child = (RadioButton) mNavBar.getChildAt(position);
                 child.setChecked(true);
+                switch (position) {
+                    case 0:
+                        setTitle(getResources().getString(R.string.app_name));
+                        break;
+                    case 1:
+                        setTitle("关注");
+                        break;
+                    case 2:
+                        setTitle("交易");
+                        break;
+                    case 3:
+                        setTitle("消息");
+                        break;
+                    case 4:
+                        setTitle("个人");
+                        break;
+                }
             }
 
             @Override

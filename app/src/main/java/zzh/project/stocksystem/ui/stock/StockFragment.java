@@ -33,7 +33,7 @@ public class StockFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.frag_main, container, false);
+        View root = inflater.inflate(R.layout.frag_stock, container, false);
         ButterKnife.bind(this, root);
         mTabBar = (TabLayout) getActivity().findViewById(R.id.tab);
         initView();
@@ -93,6 +93,7 @@ public class StockFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (mTabBar != null) {
             mTabBar.setVisibility(isVisibleToUser ? View.VISIBLE : View.GONE);
+            mTabBar.setupWithViewPager(mPager);
         }
     }
 
