@@ -9,14 +9,13 @@
 后台项目源码 https://github.com/zackzhou915/stocksystem_web
 
 ##Usages
-
+<br />
 
 ##Screen Shots
-
-<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshots/stock_list.png" width = "300" height = "572" alt="s1" align=center />
-<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshots/stock_detail.png" width = "300" height = "572" alt="s2" align=center />
-<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshots/favor.png" width = "300" height = "572" alt="s3" align=center />
-<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshots/self.png" width = "300" height = "572" alt="s4" align=center />
+<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/stock_list.png" width = "270" height = "480" alt="s1" align=center />
+<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/stock_detail.png" width = "270" height = "480" alt="s2" align=center />
+<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/favor.png" width = "270" height = "480" alt="s3" align=center />
+<img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/self.png" width = "270" height = "480" alt="s4" align=center />
 
 
 ####License
