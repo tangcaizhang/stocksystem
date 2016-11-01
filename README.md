@@ -3,7 +3,7 @@
 
 基于 Material Design 重新设计界面 <br />
 基于MVP架构 <br />
-股票数据来源聚合API： https://www.juhe.cn/docs/api/id/21 <br />
+股票数据来源  [聚合API](https://www.juhe.cn/docs/api/id/21) <br />
 集成极光消息推送（待完善）<br />
 
 后台项目源码 https://github.com/zackzhou915/stocksystem_web
@@ -15,8 +15,9 @@
 <img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/stock_list.png" width = "270" height = "480" alt="s1" align=center />
 <img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/stock_detail.png" width = "270" height = "480" alt="s2" align=center />
 <img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/favor.png" width = "270" height = "480" alt="s3" align=center />
+<br />
+<br />
 <img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/self.png" width = "270" height = "480" alt="s4" align=center />
-
 
 ####License
 
