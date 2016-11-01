@@ -8,9 +8,6 @@
 
 后台项目源码 https://github.com/zackzhou915/stocksystem_web
 
-##Usages
-<br />
-
 ##Screen Shots
 <img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/stock_list.png" width = "270" height = "480" alt="s1" align=center />
 <img src="https://github.com/zackzhou915/stocksystem/blob/master/screenshot/stock_detail.png" width = "270" height = "480" alt="s2" align=center />
