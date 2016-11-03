@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,11 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import zzh.project.stocksystem.R;
+import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
 public class TradeFragment extends Fragment {
+    @BindView(R.id.rl_Trade_Refresh)
+    ScrollChildSwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.vp_Trade_Page)
     ViewPager mPager;
     TabLayout mTabBar;
@@ -55,6 +59,12 @@ public class TradeFragment extends Fragment {
             }
         });
         mTabBar.setupWithViewPager(mPager);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override

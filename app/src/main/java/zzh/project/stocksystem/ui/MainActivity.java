@@ -74,7 +74,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
             }
         });
-
+        mViewPager.setOffscreenPageLimit(5);
         mNavBar.setOnCheckedChangeListener(this);
     }
 

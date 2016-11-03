@@ -5,4 +5,5 @@ public class UserBean {
     public String password;
     public String email;
     public String nick;
+    public float balance;
 }
