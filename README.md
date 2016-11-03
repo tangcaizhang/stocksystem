@@ -1,5 +1,5 @@
 # StockSystem
-业余时间维护的个人项目，持续完善中。
+业余时间维护的个人项目，持续更新中。
 
 基于 Material Design 重新设计界面 <br />
 基于MVP架构 <br />
