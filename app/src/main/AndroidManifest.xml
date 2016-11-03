@@ -61,6 +61,16 @@
             android:name=".ui.stockdetail.StockDetailActivity"
             android:label="股票详情"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.about.AboutActivity"
+            android:label="关于"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="设置"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -74,6 +74,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
             }
         });
+
         mNavBar.setOnCheckedChangeListener(this);
     }
 

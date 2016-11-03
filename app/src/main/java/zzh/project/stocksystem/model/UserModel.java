@@ -22,6 +22,9 @@ public interface UserModel {
     // 注冊
     void register(UserBean userBean, Callback2<Void, String> callback);
 
+    // 获取个人信息
+    void getInfo(Callback2<UserBean, String> callback);
+
     // 检测access_token
     void checkAccessToken(Callback2<Void, Void> callback);
 

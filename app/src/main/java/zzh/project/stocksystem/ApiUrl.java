@@ -8,6 +8,8 @@ public final class ApiUrl {
 
     public static final String SERVER_REGISTER = BASE_URL + "/register";
 
+    public static final String SERVER_GET_INFO = BASE_URL + "/getinfo";
+
     public static final String SERVER_FAVOR = BASE_URL + "/favor";
 
     public static final String SERVER_UNFAVOR = BASE_URL + "/unfavor";

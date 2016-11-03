@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    android:background="@color/ghostwhite"
+    android:background="@color/whitesmoke"
     android:orientation="vertical">
 
     <LinearLayout
@@ -29,27 +29,27 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_UserInfo_Nick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:textSize="42px"
                 tools:text="咕嘿嘿" />
 
             <TextView
+                android:id="@+id/tv_UserInfo_Username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="账号：574437725@qq.com" />
+                android:textSize="42px"
+                tools:text="账号：" />
         </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/grey" />
-
     <RelativeLayout
+        android:id="@+id/rl_UserInfo_AccountDetail"
         android:layout_width="match_parent"
         android:layout_height="140px"
-        android:background="@color/white"
+        android:background="@drawable/bg_info_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
@@ -61,12 +61,14 @@
             android:src="@mipmap/ic_vip" />
 
         <TextView
+            android:id="@+id/tv_UserInfo_Account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100px"
-            android:text="支付账号："
-            android:textColor="@color/black" />
+            android:layout_marginLeft="120px"
+            android:text="支付账号：尚未绑定"
+            android:textColor="@color/black"
+            android:textSize="42px" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -78,10 +80,11 @@
 
 
     <RelativeLayout
+        android:id="@+id/rl_UserInfo_BalanceDetail"
         android:layout_width="match_parent"
         android:layout_height="140px"
         android:layout_marginTop="20px"
-        android:background="@color/white"
+        android:background="@drawable/bg_info_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
@@ -93,12 +96,14 @@
             android:src="@mipmap/ic_money" />
 
         <TextView
+            android:id="@+id/tv_UserInfo_Balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100px"
-            android:text="余额："
-            android:textColor="@color/black" />
+            android:layout_marginLeft="120px"
+            android:text="余额：0"
+            android:textColor="@color/black"
+            android:textSize="42px" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -109,10 +114,11 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_UserInfo_Settings"
         android:layout_width="match_parent"
         android:layout_height="140px"
         android:layout_marginTop="20px"
-        android:background="@color/white"
+        android:background="@drawable/bg_info_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
@@ -127,9 +133,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100px"
+            android:layout_marginLeft="120px"
             android:text="设置"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="42px" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -140,10 +147,11 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_UserInfo_About"
         android:layout_width="match_parent"
         android:layout_height="140px"
         android:layout_marginTop="20px"
-        android:background="@color/white"
+        android:background="@drawable/bg_info_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
@@ -158,9 +166,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100px"
+            android:layout_marginLeft="120px"
             android:text="关于"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="42px" />
 
         <ImageView
             android:layout_width="wrap_content"

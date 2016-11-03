@@ -5,6 +5,8 @@ import zzh.project.stocksystem.ui.base.BaseView;
 
 interface SplashContract {
     interface Presenter extends BasePresenter {
+        // 执行初始化
+        void doInit();
     }
 
     interface View extends BaseView {

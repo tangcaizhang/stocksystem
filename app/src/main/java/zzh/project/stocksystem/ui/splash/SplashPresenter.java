@@ -33,7 +33,8 @@ public class SplashPresenter implements SplashContract.Presenter {
         mView = null;
     }
 
-    private void doInit() {
+    @Override
+    public void doInit() {
         final long start = SystemClock.currentThreadTimeMillis();
         mUserModel.checkAccessToken(new Callback2<Void, Void>() {
             @Override

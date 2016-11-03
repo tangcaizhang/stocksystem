@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +28,7 @@ import zzh.project.stocksystem.model.Callback2;
 import zzh.project.stocksystem.model.UserModel;
 import zzh.project.stocksystem.sp.UserSp;
 import zzh.project.stocksystem.volley.FastVolley;
+import zzh.project.stocksystem.volley.GsonObjectRequest;
 
 public class UserModelImpl implements UserModel {
     public static final String TAG = UserModelImpl.class.getSimpleName();
@@ -116,6 +118,30 @@ public class UserModelImpl implements UserModel {
             }
         });
         request.setTag("register");
+        mFastVolley.addShortRequest(HASHCODE, request);
+    }
+
+    @Override
+    public void getInfo(final Callback2<UserBean, String> callback) {
+        String url = ApiUrl.SERVER_GET_INFO + "?access_token=" + mAccessToken.accessToken;
+        GsonObjectRequest request = new GsonObjectRequest(url, new Response.Listener<JsonObject>() {
+            @Override
+            public void onResponse(JsonObject response) {
+                int errcode = response.get("errcode").getAsInt();
+                if (errcode == ServerErrorCode.SUCCESS) {
+                    UserBean bean = new Gson().fromJson(response.get("data"), UserBean.class);
+                    callback.onSuccess(bean);
+                } else if (errcode == ServerErrorCode.ACCESS_TOKEN_EXPIRES) {
+                    callback.onError(response.get("errmsg").getAsString());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(MsgHelper.getErrorMsg(error));
+            }
+        });
+        request.setTag("getInfo");
         mFastVolley.addShortRequest(HASHCODE, request);
     }
 
