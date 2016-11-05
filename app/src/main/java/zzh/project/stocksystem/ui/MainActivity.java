@@ -129,6 +129,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
     @Override
     public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
+        if (fragment != null && fragment instanceof SearchFragment) {
+            getSupportFragmentManager().popBackStack();
+            return;
+        }
+
         long curTime = System.currentTimeMillis();
         if ((curTime - mLastBackPressed) >= 2000) {
             ToastUtil.show("再按一次退出程序", Toast.LENGTH_SHORT);

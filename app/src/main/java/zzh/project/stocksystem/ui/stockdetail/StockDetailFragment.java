@@ -99,6 +99,8 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
     @Override
     public void showStockDetail(final StockDetailBean detail) {
         if (detail != null) {
+            mFavor.setVisible(true);
+            mActionButton.setVisibility(View.VISIBLE);
             mNotFoundView.setVisibility(View.GONE);
             mResultView.setVisibility(View.VISIBLE);
             mChart.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
@@ -149,6 +151,8 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
 
     @Override
     public void showNotFound() {
+        mFavor.setVisible(false);
+        mActionButton.setVisibility(View.INVISIBLE);
         mResultView.setVisibility(View.GONE);
         mNotFoundView.setVisibility(View.VISIBLE);
     }

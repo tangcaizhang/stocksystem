@@ -55,17 +55,18 @@ public class SearchFragment extends Fragment {
                 return true;
             }
         });
+        root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                close(mSearchTextView);
+            }
+        });
+
         mSearchTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    /*隐藏软键盘*/
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    if (imm.isActive()) {
-                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                    }
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    close(v);
                     Intent intent = new Intent(getContext(), StockDetailActivity.class);
                     String gid = mSearchTextView.getText() + "";
                     intent.putExtra("gid", gid);
@@ -76,5 +77,15 @@ public class SearchFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void close(View v) {
+        /*隐藏软键盘*/
+        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+        }
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 }

@@ -58,7 +58,6 @@ public class TradeFragment extends Fragment {
                 return mPageTitles[position];
             }
         });
-        mTabBar.setupWithViewPager(mPager);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

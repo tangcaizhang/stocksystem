@@ -106,11 +106,11 @@ public class StockFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.Main_Menu_Search:
-                Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.appBar);
+                Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(android.R.id.content);
                 if (fragment != null && fragment instanceof SearchFragment) {
                     return true;
                 }
-                getActivity().getSupportFragmentManager().beginTransaction().add(R.id.appBar,
+                getActivity().getSupportFragmentManager().beginTransaction().add(android.R.id.content,
                         new SearchFragment()).addToBackStack("search_view").commit();
                 return true;
         }
