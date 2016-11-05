@@ -1,8 +1,8 @@
-package zzh.project.stocksystem.model.impl;
+package zzh.project.stocksystem.model.impl.juhe;
 
 import java.util.List;
 
-class JuheListRespSH {
+public class JuheListRespSH {
 
     /**
      * error_code : 0

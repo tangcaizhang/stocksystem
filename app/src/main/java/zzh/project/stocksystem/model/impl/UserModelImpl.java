@@ -75,7 +75,7 @@ public class UserModelImpl implements UserModel {
                             accessToken.expiresIn = jData.optLong("expires");
                             callback.onSuccess(accessToken);
                         }
-                    } else if (errcode == ServerErrorCode.PASS_WRONG) {
+                    } else {
                         callback.onError("用户名或密码不正确");
                     }
                 }
@@ -107,7 +107,7 @@ public class UserModelImpl implements UserModel {
                 int errcode = response.optInt("errcode");
                 if (errcode == ServerErrorCode.SUCCESS) {
                     callback.onSuccess(null);
-                } else if (errcode == ServerErrorCode.USERNAME_ALREADY_EXISTS) {
+                } else {
                     callback.onError("该用户已存在");
                 }
             }

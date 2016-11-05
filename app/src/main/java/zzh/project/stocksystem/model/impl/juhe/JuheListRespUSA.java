@@ -1,8 +1,8 @@
-package zzh.project.stocksystem.model.impl;
+package zzh.project.stocksystem.model.impl.juhe;
 
 import java.util.List;
 
-class JuheListRespUSA {
+public class JuheListRespUSA {
 
     /**
      * reason : SUCCESSED!

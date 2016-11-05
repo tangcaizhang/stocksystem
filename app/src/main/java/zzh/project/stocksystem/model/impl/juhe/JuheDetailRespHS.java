@@ -1,8 +1,8 @@
-package zzh.project.stocksystem.model.impl;
+package zzh.project.stocksystem.model.impl.juhe;
 
 import java.util.List;
 
-class JuheDetailRespHS {
+public class JuheDetailRespHS {
 
     /**
      * resultcode : 200
