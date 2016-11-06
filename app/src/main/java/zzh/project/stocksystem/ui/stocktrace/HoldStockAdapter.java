@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zhy.autolayout.utils.AutoUtils;
+
 import java.util.List;
 
 import zzh.project.stocksystem.R;
@@ -25,6 +27,7 @@ public class HoldStockAdapter extends RecyclerView.Adapter<HoldStockAdapter.View
 
         public ViewHolder(View itemView) {
             super(itemView);
+            AutoUtils.autoSize(itemView);
             name = (TextView) itemView.findViewById(R.id.Stock_Name);
             price = (TextView) itemView.findViewById(R.id.Stock_Price);
             code = (TextView) itemView.findViewById(R.id.Stock_Code);

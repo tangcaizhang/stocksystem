@@ -42,7 +42,6 @@ public class SearchFragment extends Fragment {
                 Animator animation = ViewAnimationUtils.createCircularReveal(mBar, mBar.getWidth(), mBar.getHeight() / 2, 10f, mBar.getWidth());
                 animation.setDuration(200);
                 animation.setInterpolator(new AccelerateInterpolator());
-                animation.setTarget(mBar);
                 animation.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {

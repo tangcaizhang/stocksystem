@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.zhy.autolayout.utils.AutoUtils;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.View
 
         public ViewHolder(View itemView) {
             super(itemView);
+            AutoUtils.autoSize(itemView);
             thumb = (ImageView) itemView.findViewById(R.id.Stock_Thumb);
             name = (TextView) itemView.findViewById(R.id.Stock_Name);
             price = (TextView) itemView.findViewById(R.id.Stock_Price);

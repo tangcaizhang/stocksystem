@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -12,9 +11,9 @@ import butterknife.ButterKnife;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 import zzh.project.stocksystem.R;
+import zzh.project.stocksystem.ui.MainActivity;
 import zzh.project.stocksystem.ui.base.BaseActivity;
 import zzh.project.stocksystem.ui.login.LoginActivity;
-import zzh.project.stocksystem.ui.MainActivity;
 import zzh.project.stocksystem.util.ToastUtil;
 
 public class SplashActivity extends BaseActivity implements SplashContract.View {

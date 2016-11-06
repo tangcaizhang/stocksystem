@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zhy.autolayout.utils.AutoUtils;
+
 import java.util.List;
 
 import zzh.project.stocksystem.R;
@@ -26,6 +28,7 @@ public class TradeListAdapter extends RecyclerView.Adapter<TradeListAdapter.View
 
         public ViewHolder(View itemView) {
             super(itemView);
+            AutoUtils.autoSize(itemView);
             flag = (TextView) itemView.findViewById(R.id.Trade_Flag);
             name = (TextView) itemView.findViewById(R.id.Trade_Name);
             price = (TextView) itemView.findViewById(R.id.Trade_Price);
