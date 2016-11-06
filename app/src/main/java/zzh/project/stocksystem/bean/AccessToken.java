@@ -1,6 +1,8 @@
 package zzh.project.stocksystem.bean;
 
-public class AccessToken {
+import java.io.Serializable;
+
+public class AccessToken implements Serializable{
     public String accessToken;
     public long expiresIn;
 

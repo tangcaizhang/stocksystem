@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eeeeee"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_Pop_Title"
+        android:layout_width="match_parent"
+        android:layout_height="120px"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="购买股票"
+        android:textColor="@android:color/white"
+        android:textSize="42px" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="16px">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_Num_Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="购买数目:"
+                android:textSize="48px" />
+
+            <EditText
+                android:id="@+id/et_Num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tv_Num_Label"
+                android:gravity="center_horizontal"
+                android:inputType="numberSigned"
+                android:lines="1"
+                android:maxLength="4"
+                android:minWidth="48px"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="48px" />
+
+            <Button
+                android:id="@+id/btn_Add"
+                android:layout_width="100px"
+                android:layout_height="100px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4px"
+                android:layout_marginRight="8px"
+                android:layout_toLeftOf="@+id/btn_Reduce"
+                android:background="@color/colorAccent"
+                android:text="+"
+                android:textColor="@color/white"
+                android:textSize="60px" />
+
+
+            <Button
+                android:id="@+id/btn_Reduce"
+                android:layout_width="100px"
+                android:layout_height="100px"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16px"
+                android:background="@color/colorAccent"
+                android:text="-"
+                android:textColor="@color/white"
+                android:textSize="60px" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32px"
+            android:text="提示:每笔最高限9999股"
+            android:textColor="@color/tomato"
+            android:textSize="40px" />
+
+        <Button
+            android:id="@+id/btn_Done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16px"
+            android:text="购买"
+            android:textSize="42px" />
+
+    </LinearLayout>
+</LinearLayout>

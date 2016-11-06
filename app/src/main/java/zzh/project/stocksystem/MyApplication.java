@@ -22,6 +22,9 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.io.File;
 
+import cn.jpush.android.api.JPushInterface;
+import zzh.project.stocksystem.model.SettingsModel;
+import zzh.project.stocksystem.model.impl.SettingsModelImpl;
 import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
 import zzh.project.stocksystem.model.impl.UserModelImpl;
 import zzh.project.stocksystem.volley.FastVolley;
@@ -46,13 +49,19 @@ public class MyApplication extends Application {
         }
         initNetWorkStatusObservable();
         initImageLoader(this);
+        initJPush(this);
+
+        // 初始设置项
+        if (SettingsModelImpl.getInstance().isEnablePush()) {
+            SettingsModelImpl.getInstance().enablePush();
+        } else {
+            SettingsModelImpl.getInstance().disablePush();
+        }
     }
 
     private NetWorkObservable mNetWorkObservable;
 
-    /*********************
-     * 初始化网络监听
-     ***************/
+    /********************** 初始化网络监听 ***************/
     private void initNetWorkStatusObservable() {
         mNetWorkObservable = new NetWorkObservable(this);
     }
@@ -76,9 +85,7 @@ public class MyApplication extends Application {
         }
     }
 
-    /*******************
-     * 初始化图片加载
-     **********************/
+    /******************** 初始化图片加载**********************/
     private void initImageLoader(Context context) {
         int memoryCacheSize = (int) (Runtime.getRuntime().maxMemory() / 5);
         MemoryCacheAware<String, Bitmap> memoryCache;
@@ -113,6 +120,12 @@ public class MyApplication extends Application {
 //        if (!DEBUG) {
             L.disableLogging();
 //        }
+    }
+
+    /********************** 初始化jpush ***************/
+    private void initJPush(Context context) {
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(context);
     }
 
     // 回收资源

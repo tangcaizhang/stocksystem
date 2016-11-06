@@ -1,6 +1,8 @@
 package zzh.project.stocksystem.bean;
 
-public class UserBean {
+import java.io.Serializable;
+
+public class UserBean implements Serializable{
     public String username;
     public String password;
     public String email;

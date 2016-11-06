@@ -6,12 +6,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
@@ -21,6 +24,7 @@ import butterknife.ButterKnife;
 import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.bean.StockDetailBean;
 import zzh.project.stocksystem.ui.base.BaseFragment;
+import zzh.project.stocksystem.ui.win.TradePopWin;
 
 public class StockDetailFragment extends BaseFragment implements StockDetailContract.View {
 
@@ -60,6 +64,8 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
     TextView mTraAmount;
     FloatingActionButton mActionButton;
 
+    TradePopWin mTradePopWin;
+
     private String mGid;
 
     @Override
@@ -91,7 +97,30 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
         mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (!mTradePopWin.isShowing()) {
+                    mTradePopWin.showAtLocation(getActivity().findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
+                    WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+                    lp.alpha = 0.5f;
+                    getActivity().getWindow().setAttributes(lp);
+                }
+            }
+        });
+        mTradePopWin = new TradePopWin(getContext());
+        mTradePopWin.setTitle("购买股票");
+        mTradePopWin.setLabel("购买数目：");
+        mTradePopWin.setDone("购买");
+        mTradePopWin.setOnDoneListener(new TradePopWin.OnDoneListener() {
+            @Override
+            public void done(int num) {
+                mPresenter.buy(num);
+            }
+        });
+        mTradePopWin.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+                lp.alpha = 1f;
+                getActivity().getWindow().setAttributes(lp);
             }
         });
     }
@@ -175,6 +204,13 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
         if (mFavor != null) {
             mFavor.setTitle("取消关注");
             mFavor.setIcon(R.drawable.ic_favor_p);
+        }
+    }
+
+    @Override
+    public void hideBuyPop() {
+        if (mTradePopWin != null) {
+            mTradePopWin.dismiss();
         }
     }
 

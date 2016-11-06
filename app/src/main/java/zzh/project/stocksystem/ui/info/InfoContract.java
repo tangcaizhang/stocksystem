@@ -14,19 +14,19 @@ interface InfoContract {
         void showUserInfo(UserBean userBean);
 
         // 显示交易账号
-        void showAccount(AccountBean accountBean);
+        void showAccount(String cardNum);
 
         // 显示余额
         void showBalance(float balance);
 
         // 跳转到充值
-        void toReChargeActivity();
+        void toReChargeActivity(AccountBean accountBean);
 
         // 跳转到绑定支付
         void toBindAccountActivity();
 
         // 跳转到支付账号详情
-        void toAccountDetailActivity();
+        void toAccountDetailActivity(AccountBean accountBean);
     }
 
     interface Presenter extends BasePresenter {

@@ -24,9 +24,9 @@ import zzh.project.stocksystem.ui.stockdetail.StockDetailActivity;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
 public class FavorFragment extends BaseFragment implements FavorContract.View {
-    @BindView(R.id.rv_Favor_List)
+    @BindView(R.id.rv_List)
     RecyclerView mRecyclerView;
-    @BindView(R.id.rl_Favor_Refresh)
+    @BindView(R.id.rl_Refresh)
     ScrollChildSwipeRefreshLayout mRefreshLayout;
     private List<StockBean> mData = new ArrayList<>(0);
     private StockListAdapter mAdapter;
@@ -40,7 +40,7 @@ public class FavorFragment extends BaseFragment implements FavorContract.View {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.frag_favor, container, false);
+        View root = inflater.inflate(R.layout.frag_list, container, false);
         ButterKnife.bind(this, root);
         initView();
         mPresenter.start();

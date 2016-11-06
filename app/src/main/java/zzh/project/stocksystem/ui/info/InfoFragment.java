@@ -1,9 +1,11 @@
 package zzh.project.stocksystem.ui.info;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +18,16 @@ import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.bean.UserBean;
 import zzh.project.stocksystem.ui.about.AboutActivity;
+import zzh.project.stocksystem.ui.account.AccountDetailActivity;
+import zzh.project.stocksystem.ui.account.BindActivity;
 import zzh.project.stocksystem.ui.base.BaseFragment;
+import zzh.project.stocksystem.ui.recharge.RechargeActivity;
 import zzh.project.stocksystem.ui.settings.SettingsActivity;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
 public class InfoFragment extends BaseFragment implements InfoContract.View {
+    public static final int REQUEST_CODE_BIND = 0;
+    public static final int REQUEST_CODE_RECHARGE = 1;
 
     @BindView(R.id.rl_UserInfo_Refresh)
     ScrollChildSwipeRefreshLayout mRefreshLayout;
@@ -47,8 +54,13 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
         View root = inflater.inflate(R.layout.frag_info, container, false);
         ButterKnife.bind(this, root);
         initView();
-        mPresenter.start();
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
     }
 
     private void initView() {
@@ -80,8 +92,9 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
     }
 
     @Override
-    public void showAccount(AccountBean account) {
-        mAccount.setText(String.format("支付账号：%s", account.carNum));
+    public void showAccount(String carNum) {
+        mAccount.setText(String.format("支付账号：%s", TextUtils.isEmpty(carNum) ? "尚未绑定" :
+                carNum.substring(0, 4) + "****" + carNum.substring(carNum.length() - 4)));
     }
 
     @Override
@@ -90,18 +103,23 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
     }
 
     @Override
-    public void toReChargeActivity() {
-
+    public void toReChargeActivity(AccountBean accountBean) {
+        Intent intent = new Intent(getContext(), RechargeActivity.class);
+        intent.putExtra(RechargeActivity.ARGUMENT_ACCOUNT, accountBean);
+        startActivityForResult(intent, REQUEST_CODE_RECHARGE);
     }
 
     @Override
     public void toBindAccountActivity() {
-
+        Intent intent = new Intent(getContext(), BindActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_BIND);
     }
 
     @Override
-    public void toAccountDetailActivity() {
-
+    public void toAccountDetailActivity(AccountBean accountBean) {
+        Intent intent = new Intent(getContext(), AccountDetailActivity.class);
+        intent.putExtra(AccountDetailActivity.ARGUMENT_ACCOUNT, accountBean);
+        startActivity(intent);
     }
 
     @OnClick(R.id.rl_UserInfo_AccountDetail)
@@ -124,5 +142,16 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
     public void toAboutActivity() {
         Intent intent = new Intent(getContext(), AboutActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_BIND && resultCode == Activity.RESULT_OK) {
+            mPresenter.loadAccount();
+        }
+        if (requestCode == REQUEST_CODE_RECHARGE && resultCode == Activity.RESULT_OK) {
+            mPresenter.loadUserInfo();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

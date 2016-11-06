@@ -25,7 +25,7 @@ android {
 
 dependencies {
     // App's dependencies, including test
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     // 自适应框架
     compile project(':autolayout')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
@@ -39,34 +39,30 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.0'
     compile 'com.google.code.gson:gson:2.2.2'
     compile 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
-    compile ('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
+    compile('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true;
     }
     // compile 'io.reactivex:rxjava:1.0.14'
     // compile 'io.reactivex:rxandroid:1.0.1'
-
     // Dependencies for local unit tests
     testCompile "junit:junit:$rootProject.ext.junitVersion"
     testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
     testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
-
     // Android Testing Support Library's runner and rules
     androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"
     androidTestCompile "com.android.support.test:rules:$rootProject.ext.runnerVersion"
-
     // Dependencies for Android unit tests
     androidTestCompile "junit:junit:$rootProject.ext.junitVersion"
     androidTestCompile "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
-
     // Espresso UI Testing
     androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
     androidTestCompile "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion"
     androidTestCompile "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
-
     // Resolve conflicts between main and test APK:
     androidTestCompile "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
     androidTestCompile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     androidTestCompile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile files('libs/jpush-android-2.2.0.jar')
 }

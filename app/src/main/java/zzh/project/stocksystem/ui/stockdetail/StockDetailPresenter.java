@@ -15,6 +15,7 @@ public class StockDetailPresenter implements StockDetailContract.Presenter {
     private StockModel mStockModel;
     private UserModel mUserModel;
     private boolean mGidExists;
+    private StockDetailBean mStockDetail;
 
     public StockDetailPresenter(StockDetailContract.View view) {
         mView = view;
@@ -39,6 +40,7 @@ public class StockDetailPresenter implements StockDetailContract.Presenter {
         mStockModel.getDetail(mView.getGid(), new Callback2<StockDetailBean, String>() {
             @Override
             public void onSuccess(StockDetailBean detailBean) {
+                mStockDetail = detailBean;
                 if (mView != null && mView.isActive()) {
                     mView.hideLoading();
                     if (detailBean == null) {
@@ -129,6 +131,33 @@ public class StockDetailPresenter implements StockDetailContract.Presenter {
                     mView.hideLoading();
                     mView.showErrorMessage(s);
                     mView.showAlreadyFavor();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void buy(int num) {
+        if (!mGidExists) {
+            mView.showErrorMessage("该股票不存在");
+            return;
+        }
+        mView.showLoading();
+        mUserModel.buy(mView.getGid(), mStockDetail.name, Float.parseFloat(mStockDetail.nowPri), num, new Callback2<Void, String>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                if (mView != null && mView.isActive()) {
+                    mView.hideLoading();
+                    mView.showMessage("购买成功");
+                    mView.hideBuyPop();
+                }
+            }
+
+            @Override
+            public void onError(String s) {
+                if (mView != null && mView.isActive()) {
+                    mView.hideLoading();
+                    mView.showErrorMessage(s);
                 }
             }
         });

@@ -2,19 +2,33 @@ package zzh.project.stocksystem;
 
 public final class ApiUrl {
 
-    public static final String BASE_URL = "http://192.168.31.184:8080/stocksystem/app";
+    private static final String BASE_URL = "http://192.168.31.184:8080/stocksystem/app";
 
     public static final String SERVER_LOGIN = BASE_URL + "/login";
 
     public static final String SERVER_REGISTER = BASE_URL + "/register";
 
-    public static final String SERVER_GET_INFO = BASE_URL + "/getinfo";
+    public static final String SERVER_GET_INFO = BASE_URL + "/getInfo";
 
     public static final String SERVER_FAVOR = BASE_URL + "/favor";
 
-    public static final String SERVER_UNFAVOR = BASE_URL + "/unfavor";
+    public static final String SERVER_UNFAVOR = BASE_URL + "/unFavor";
 
-    public static final String SERVER_LIST_FAVOR = BASE_URL + "/listfavor";
+    public static final String SERVER_LIST_FAVOR = BASE_URL + "/listFavor";
+
+    public static final String SERVER_RECHARGE = BASE_URL + "/recharge";
+
+    public static final String SERVER_BIND_ACCOUNT = BASE_URL + "/bind";
+
+    public static final String SERVER_GET_ACCOUNT = BASE_URL + "/getAccount";
+
+    public static final String SERVER_LIST_TRADE = BASE_URL + "/listTrade";
+
+    public static final String SERVER_BUY = BASE_URL + "/buy";
+
+    public static final String SERVER_SELL = BASE_URL + "/sell";
+
+    public static final String SERVER_LIST_STOCK = BASE_URL + "/listStock";
 
     public static final String SERVER_CHECK = BASE_URL + "/check";
 

@@ -6,7 +6,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,8 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import zzh.project.stocksystem.R;
-import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
 public class TradeFragment extends Fragment {
-    @BindView(R.id.rl_Trade_Refresh)
-    ScrollChildSwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.vp_Trade_Page)
     ViewPager mPager;
     TabLayout mTabBar;
@@ -32,20 +28,15 @@ public class TradeFragment extends Fragment {
         return root;
     }
 
-    public static class EmptyFragment extends Fragment {
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            return super.onCreateView(inflater, container, savedInstanceState);
-        }
-    }
-
     private void initView() {
         mPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                // TODO
-                return new EmptyFragment();
+                if (position == 0) {
+                    return new TradeListFragment();
+                } else {
+                    return new HoldFragment();
+                }
             }
 
             @Override
@@ -56,12 +47,6 @@ public class TradeFragment extends Fragment {
             @Override
             public CharSequence getPageTitle(int position) {
                 return mPageTitles[position];
-            }
-        });
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -76,7 +61,7 @@ public class TradeFragment extends Fragment {
     }
 
     private String[] mPageTitles = new String[]{
-            "我的",
-            "审核中"
+            "流水",
+            "持有"
     };
 }

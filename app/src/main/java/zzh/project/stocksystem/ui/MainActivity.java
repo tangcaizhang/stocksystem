@@ -1,5 +1,6 @@
 package zzh.project.stocksystem.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,6 +22,8 @@ import zzh.project.stocksystem.ui.stocktrace.TradeFragment;
 import zzh.project.stocksystem.util.ToastUtil;
 
 public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
+    public static final String ARGUMENT_PAGE_INDEX = "page_index";
+
     @BindView(R.id.vp_Main_Content)
     ViewPager mViewPager;
     @BindView(R.id.rg_NavBar)
@@ -36,6 +39,19 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
         ButterKnife.bind(this);
         initView(savedInstanceState);
+
+        if (getIntent().hasExtra(ARGUMENT_PAGE_INDEX)) {
+            mViewPager.setCurrentItem(getIntent().getIntExtra(ARGUMENT_PAGE_INDEX, 0));
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (getIntent().hasExtra(ARGUMENT_PAGE_INDEX)) {
+            mViewPager.setCurrentItem(getIntent().getIntExtra(ARGUMENT_PAGE_INDEX, 0));
+        }
     }
 
     private void initView(Bundle savedInstanceState) {

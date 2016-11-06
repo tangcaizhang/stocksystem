@@ -12,7 +12,7 @@ interface StockDetailContract {
         // 显示无法找到
         void showNotFound();
 
-        // 股票代号
+        // 获取股票代号
         String getGid();
 
         // 显示未关注
@@ -20,6 +20,9 @@ interface StockDetailContract {
 
         // 显示关注
         void showAlreadyFavor();
+
+        // 关闭购买弹窗
+        void hideBuyPop();
     }
 
     interface Presenter extends BasePresenter {
@@ -31,5 +34,8 @@ interface StockDetailContract {
 
         // 取消关注
         void cancelFavor();
+
+        // 购买
+        void buy(int num);
     }
 }

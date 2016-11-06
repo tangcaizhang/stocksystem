@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="140px"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/tv_Recharge_CardNum_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="支付账号："
+            android:textColor="@color/black"
+            android:textSize="42px" />
+
+
+        <TextView
+            android:id="@+id/tv_Recharge_CardNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20px"
+            android:layout_toRightOf="@id/tv_Recharge_CardNum_Label"
+            android:textColor="@color/black"
+            android:textSize="42px"
+            tools:text="123456" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="140px"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/tv_Recharge_Money_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="充值金额："
+            android:textColor="@color/black"
+            android:textSize="42px" />
+
+
+        <EditText
+            android:id="@+id/tv_Recharge_Money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20px"
+            android:layout_toRightOf="@id/tv_Recharge_Money_Label"
+            android:inputType="number"
+            android:lines="1"
+            android:text="0.0"
+            android:textSize="42px" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="140px"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/tv_Recharge_Pass_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="支付密码："
+            android:textColor="@color/black"
+            android:textSize="42px" />
+
+
+        <EditText
+            android:id="@+id/tv_Recharge_Pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20px"
+            android:layout_toRightOf="@id/tv_Recharge_Pass_Label"
+            android:inputType="numberPassword"
+            android:lines="1"
+            android:maxLength="8"
+            android:textSize="42px"
+            tools:text="123456" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_Recharge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32px"
+        android:text="充值"
+        android:textSize="48px" />
+</LinearLayout>

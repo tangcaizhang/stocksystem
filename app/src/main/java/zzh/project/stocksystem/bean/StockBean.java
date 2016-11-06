@@ -1,7 +1,9 @@
 package zzh.project.stocksystem.bean;
 
 
-public class StockBean {
+import java.io.Serializable;
+
+public class StockBean implements Serializable{
     public String gid; // 股票编号
     public String name; // 股票名称
     public String nowPri; // 当前价格

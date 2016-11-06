@@ -9,6 +9,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,8 +34,23 @@ public class SettingsFragment extends BaseFragment implements SettingsContract.V
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.frag_settings, container, false);
         ButterKnife.bind(this, root);
-        mPresenter.start();
+        mPushSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mPresenter.enablePush();
+                } else {
+                    mPresenter.disablePush();
+                }
+            }
+        });
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
     }
 
     @Override
@@ -45,7 +61,9 @@ public class SettingsFragment extends BaseFragment implements SettingsContract.V
 
     @Override
     public void switchPush(boolean checked) {
-        mPushSwitch.setChecked(checked);
+        if (mPushSwitch.isChecked() != checked) {
+            mPushSwitch.setChecked(checked);
+        }
     }
 
     @OnClick(R.id.rl_Settings_Logout)
