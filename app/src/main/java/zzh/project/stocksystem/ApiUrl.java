@@ -2,7 +2,9 @@ package zzh.project.stocksystem;
 
 public final class ApiUrl {
 
-    private static final String BASE_URL = "http://192.168.31.184:8080/stocksystem/app";
+//    private static final String BASE_URL = "http://192.168.31.184:8080/stocksystem/app";
+
+    private static final String BASE_URL = "http://zackzhou915ss.duapp.com/app";
 
     public static final String SERVER_LOGIN = BASE_URL + "/login";
 

@@ -73,25 +73,25 @@
     @android.support.annotation.Keep <init>(...);
 }
 
--keepclassmembers class * implements java.io.Serializable {
-    static final long serialVersionUID;
-    private static final java.io.ObjectStreamField[] serialPersistentFields;
-    private void writeObject(java.io.ObjectOutputStream);
-    private void readObject(java.io.ObjectInputStream);
-    java.lang.Object writeReplace();
-    java.lang.Object readResolve();
+-keepclassmembers class * implements java.io.Serializable{
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
 }
 
--keepattributes Signature
+-keepattributes Signature
 -keep class zzh.project.stocksystem.bean.** {*;}
 -keep class zzh.project.stocksystem.model.impl.juhe.** {*;}
 
--assumenosideeffects class android.util.Log {
-    public static *** v(...);
-    public static *** i(...);
-    public static *** d(...);
-    public static *** w(...);
-    public static *** e(...);
+-assumenosideeffects class android.util.Log {
+    public static *** v(...);
+    public static *** i(...);
+    public static *** d(...);
+    public static *** w(...);
+    public static *** e(...);
 }
 
 -dontwarn cn.jpush.**

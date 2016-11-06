@@ -60,6 +60,7 @@
             android:layout_toRightOf="@id/tv_Recharge_Money_Label"
             android:inputType="number"
             android:lines="1"
+            android:maxLength="6"
             android:text="0.0"
             android:textSize="42px" />
     </RelativeLayout>

@@ -43,8 +43,13 @@ public class FavorFragment extends BaseFragment implements FavorContract.View {
         View root = inflater.inflate(R.layout.frag_list, container, false);
         ButterKnife.bind(this, root);
         initView();
-        mPresenter.start();
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
     }
 
     @Override

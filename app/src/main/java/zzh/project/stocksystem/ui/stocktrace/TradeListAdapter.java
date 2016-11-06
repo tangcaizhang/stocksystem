@@ -66,7 +66,7 @@ public class TradeListAdapter extends RecyclerView.Adapter<TradeListAdapter.View
         holder.code.setText(String.format("股票代号：%s", bean.stockCode));
         holder.price.setText(String.format("单价：%s", bean.uPrice));
         holder.total.setText(String.format("数量：%s", bean.amount));
-        holder.cost.setText(String.format("金额：%s", Float.parseFloat(bean.uPrice) * bean.amount + " ¥"));
+        holder.cost.setText(String.format("金额：%.2f ¥", Float.parseFloat(bean.uPrice) * bean.amount));
         if (bean.type.equals("buy")) {
             holder.flag.setText("买");
             holder.flag.setBackgroundColor(mContext.getResources().getColor(R.color.olivedrab));
