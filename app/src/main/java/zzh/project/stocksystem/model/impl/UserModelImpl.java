@@ -162,9 +162,11 @@ public class UserModelImpl implements UserModel {
         Log.d(TAG, "access_token -> " + accessToken);
         if (accessToken.accessToken == null || accessToken.accessToken.isEmpty()) {
             callback.onError(null);
+            return;
         }
         if (accessToken.expiresIn < SystemClock.currentThreadTimeMillis()) {
             callback.onError(null);
+            return;
         }
         mFastVolley.cancelAll(HASHCODE, "check");
         String url = ApiUrl.SERVER_CHECK + "?access_token=" + mAccessToken.accessToken;
