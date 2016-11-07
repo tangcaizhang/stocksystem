@@ -102,8 +102,8 @@ public class FastVolley {
         return new DefaultRetryPolicy(5000, 2, 1);
     }
 
-    /* 请求一次，重试0次，最长请求时间可达5s，一些很小的数据请求用此接口 */
+    /* 请求一次，重试1次，最长请求时间可达5s + 5s，一些很小的数据请求用此接口 */
     public static DefaultRetryPolicy newShortRetryPolicy() {
-        return new DefaultRetryPolicy(5000, 0, 0);
+        return new DefaultRetryPolicy(5000, 1, 0);
     }
 }
