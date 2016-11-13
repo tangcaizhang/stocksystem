@@ -2,33 +2,33 @@ package zzh.project.stocksystem.model;
 
 import java.util.List;
 
+import rx.Observable;
 import zzh.project.stocksystem.bean.StockBean;
 import zzh.project.stocksystem.bean.StockDetailBean;
 
 public interface StockModel {
-
     /**
      * 查询股票详情
      */
-    void getDetail(String gid, Callback2<StockDetailBean, String> callback);
+    Observable<StockDetailBean> getDetail(String gid);
 
     /**
      * 香港股票列表
      */
-    void findAllHK(int page, Callback2<List<StockBean>, String> callback);
+    Observable<List<StockBean>> findAllHK(int page);
 
     /**
      * 美国股票列表
      */
-    void findAllUS(int page, Callback2<List<StockBean>, String> callback);
+    Observable<List<StockBean>> findAllUS(int page);
 
     /**
      * 深圳股票列表
      */
-    void findAllSZ(int page, Callback2<List<StockBean>, String> callback);
+    Observable<List<StockBean>> findAllSZ(int page);
 
     /**
      * 泸股列表
      */
-    void findAllSH(int page, Callback2<List<StockBean>, String> callback);
+    Observable<List<StockBean>> findAllSH(int page);
 }

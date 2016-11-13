@@ -8,6 +8,7 @@ import zzh.project.stocksystem.model.SettingsModel;
 import zzh.project.stocksystem.sp.SettingSp;
 
 public class SettingsModelImpl implements SettingsModel {
+    private final String TAG = this.getClass().getSimpleName();
     private static SettingsModelImpl sInstance;
     private SettingSp mSettingSp;
 
@@ -24,17 +25,21 @@ public class SettingsModelImpl implements SettingsModel {
 
     @Override
     public void enablePush() {
+        // 恢复push服务
         if (JPushInterface.isPushStopped(MyApplication.getInstance())) {
             JPushInterface.resumePush(MyApplication.getInstance());
         }
+        // 保存配置项
         mSettingSp.setEnablePush(true);
     }
 
     @Override
     public void disablePush() {
+        // 暂停push服务
         if (!JPushInterface.isPushStopped(MyApplication.getInstance())) {
             JPushInterface.stopPush(MyApplication.getInstance());
         }
+        // 保存配置项
         mSettingSp.setEnablePush(true);
     }
 

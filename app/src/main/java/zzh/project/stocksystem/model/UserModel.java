@@ -2,6 +2,7 @@ package zzh.project.stocksystem.model;
 
 import java.util.List;
 
+import rx.Observable;
 import zzh.project.stocksystem.bean.AccessToken;
 import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.bean.HoldStockBean;
@@ -17,50 +18,50 @@ public interface UserModel {
     void setHistoryUser(String history);
 
     // 登陆
-    void login(String username, String password, Callback2<AccessToken, String> callback);
+    Observable<AccessToken> login(String username, String password);
 
     // 登出
     void logout();
 
     // 注冊
-    void register(UserBean user, Callback2<Void, String> callback);
+    void register(UserBean user) throws Exception;
 
     // 获取个人信息
-    void getInfo(Callback2<UserBean, String> callback);
+    Observable<UserBean> getInfo();
 
     // 检测access_token
-    void checkAccessToken(Callback2<Void, Void> callback);
+    boolean checkAccessToken();
 
     // 保存access_token
     void saveAccessToken(AccessToken accessToken);
 
     // 关注
-    void favor(String gid, Callback2<Void, String> callback);
+    void favor(String gid) throws Exception;
 
     // 取消关注
-    void unFavor(String gid, Callback2<Void, String> callback);
+    void unFavor(String gid) throws Exception;
 
     // 获取关注列表
-    void listFavor(Callback2<List<String>, String> callback);
+    Observable<List<String>> listFavor();
 
     // 获取绑定卡片信息
-    void getAccount(Callback2<AccountBean, String> callback);
+    Observable<AccountBean> getAccount();
 
     // 绑定卡片
-    void bindAccount(AccountBean accountBean, Callback2<Void, String> callback);
+    void bindAccount(AccountBean accountBean) throws Exception;
 
     // 充值
-    void recharge(String cardNum, String password, float money, Callback2<Void, String> callback);
+    void recharge(String cardNum, String password, float money) throws Exception;
 
     // 获取交易记录
-    void listTrade(Callback2<List<TradeBean>, String> callback);
+    Observable<List<TradeBean>> listTrade();
 
     // 购买
-    void buy(String gid, String name, float uPrice, int amount, Callback2<Void, String> callback);
+    void buy(String gid, String name, float uPrice, int amount) throws Exception;
 
     // 卖出
-    void sell(String gid, String name, float uPrice, int amount, Callback2<Void, String> callback);
+    void sell(String gid, String name, float uPrice, int amount) throws Exception;
 
     // 获取持有股票
-    void listHoldStock(Callback2<List<HoldStockBean>, String> callback);
+    Observable<List<HoldStockBean>> listHoldStock();
 }

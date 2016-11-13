@@ -6,6 +6,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
 public class MsgHelper {
+    // 从异常类转换成错误提示
     public static String getErrorMsg(VolleyError error) {
         if (error instanceof TimeoutError || error.getCause() instanceof TimeoutError) {
             return "连接超时，请检测网络";

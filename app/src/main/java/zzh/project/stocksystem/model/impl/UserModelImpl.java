@@ -5,11 +5,11 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -19,6 +19,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Func1;
 import zzh.project.stocksystem.ApiUrl;
 import zzh.project.stocksystem.MyApplication;
 import zzh.project.stocksystem.ServerErrorCode;
@@ -27,16 +30,14 @@ import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.bean.HoldStockBean;
 import zzh.project.stocksystem.bean.TradeBean;
 import zzh.project.stocksystem.bean.UserBean;
-import zzh.project.stocksystem.helper.JPushHelper;
-import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.Callback2;
 import zzh.project.stocksystem.model.UserModel;
+import zzh.project.stocksystem.model.exception.StockSystemException;
 import zzh.project.stocksystem.sp.UserSp;
 import zzh.project.stocksystem.volley.FastVolley;
 import zzh.project.stocksystem.volley.GsonObjectRequest;
 
 public class UserModelImpl implements UserModel {
-    public static final String TAG = UserModelImpl.class.getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
     private static UserModelImpl sInstance;
     private UserSp mUserSp;
     private FastVolley mFastVolley;
@@ -63,39 +64,43 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void login(final String username, String password, final Callback2<AccessToken, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "login");
-        try {
-            JSONObject reqParams = new JSONObject().put("username", username).put("password", password);
-            JsonObjectRequest request = new JsonObjectRequest(ApiUrl.SERVER_LOGIN, reqParams, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "login resp " + response);
-                    int errcode = response.optInt("errcode");
-                    if (errcode == ServerErrorCode.SUCCESS) {
-                        JSONObject jData = response.optJSONObject("data");
-                        if (jData != null) {
-                            AccessToken accessToken = new AccessToken();
-                            accessToken.accessToken = jData.optString("access_token");
-                            accessToken.expiresIn = jData.optLong("expires");
-                            callback.onSuccess(accessToken);
-                            JPushHelper.setAlias(username);
+    public Observable<AccessToken> login(final String username, final String password) {
+        final String url = ApiUrl.SERVER_LOGIN;
+        mFastVolley.cancelAll(url);
+        return Observable.create(new Observable.OnSubscribe<JSONObject>() {
+            @Override
+            public void call(Subscriber<? super JSONObject> subscriber) {
+                try {
+                    JSONObject reqParams = new JSONObject().put("username", username).put("password", password);
+                    RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+                    JsonObjectRequest request = new JsonObjectRequest(url, reqParams, requestFuture, requestFuture);
+                    request.setTag(url);
+                    mFastVolley.addShortRequest(HASHCODE, request);
+                    try {
+                        JSONObject obj = requestFuture.get();
+                        int errcode = obj.optInt("errcode", -1);
+                        if (errcode == ServerErrorCode.SUCCESS && obj.has("data")) {
+                            subscriber.onNext(obj.getJSONObject("data"));
+                            subscriber.onCompleted();
+                        } else {
+                            subscriber.onError(new StockSystemException("用户名或密码不正确"));
                         }
-                    } else {
-                        callback.onError("用户名或密码不正确");
+                    } catch (Exception e) {
+                        Log.e(TAG, "login get resp failed, " + e.getClass() + ":" + e.getMessage());
                     }
+                } catch (JSONException e) {
+                    Log.e(TAG, "login gen param failed, " + e.getClass() + ":" + e.getMessage());
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    callback.onError(MsgHelper.getErrorMsg(error));
-                }
-            });
-            request.setTag("login");
-            mFastVolley.addShortRequest(HASHCODE, request);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            }
+        }).map(new Func1<JSONObject, AccessToken>() {
+            @Override
+            public AccessToken call(JSONObject jsonObject) {
+                AccessToken accessToken = new AccessToken();
+                accessToken.accessToken = jsonObject.optString("access_token");
+                accessToken.expiresIn = jsonObject.optLong("expires");
+                return accessToken;
+            }
+        });
     }
 
     @Override
@@ -104,51 +109,52 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void register(UserBean userBean, final Callback2<Void, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "register");
+    public void register(UserBean userBean) throws Exception {
+        String url = ApiUrl.SERVER_REGISTER;
+        mFastVolley.cancelAll(url);
         String reqBody = new Gson().toJson(userBean);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, ApiUrl.SERVER_REGISTER, reqBody, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                int errcode = response.optInt("errcode");
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    callback.onSuccess(null);
-                } else {
-                    callback.onError("该用户已存在");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
-            }
-        });
-        request.setTag("register");
+        RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, reqBody, requestFuture, requestFuture);
+        request.setTag(url);
         mFastVolley.addShortRequest(HASHCODE, request);
+        JSONObject obj = requestFuture.get();
+        int errcode = obj.optInt("errcode", -1);
+        if (errcode != ServerErrorCode.SUCCESS) {
+            throw new StockSystemException("该用户已存在");
+        }
     }
 
     @Override
-    public void getInfo(final Callback2<UserBean, String> callback) {
-        String url = ApiUrl.SERVER_GET_INFO + "?access_token=" + mAccessToken.accessToken;
-        GsonObjectRequest request = new GsonObjectRequest(url, new Response.Listener<JsonObject>() {
+    public Observable<UserBean> getInfo() {
+        return Observable.create(new Observable.OnSubscribe<JsonElement>() {
             @Override
-            public void onResponse(JsonObject response) {
-                int errcode = response.get("errcode").getAsInt();
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    UserBean bean = new Gson().fromJson(response.get("data"), UserBean.class);
-                    callback.onSuccess(bean);
-                } else if (errcode == ServerErrorCode.ACCESS_TOKEN_EXPIRES) {
-                    callback.onError(response.get("errmsg").getAsString());
+            public void call(Subscriber<? super JsonElement> subscriber) {
+                String url = ApiUrl.SERVER_GET_INFO + "?access_token=" + mAccessToken.accessToken;
+                mFastVolley.cancelAll(url);
+                RequestFuture<JsonObject> requestFuture = RequestFuture.newFuture();
+                GsonObjectRequest request = new GsonObjectRequest(url, requestFuture, requestFuture);
+                request.setTag(url);
+                mFastVolley.addShortRequest(HASHCODE, request);
+                try {
+                    JsonObject obj = requestFuture.get();
+                    int errcode = obj.get("errcode").getAsInt();
+                    if (errcode == ServerErrorCode.SUCCESS && obj.has("data")) {
+                        subscriber.onNext(obj.get("data"));
+                        subscriber.onCompleted();
+                    } else if (errcode == ServerErrorCode.ACCESS_TOKEN_EXPIRES) {
+                        subscriber.onError(new StockSystemException(obj.get("errmsg").getAsString()));
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "getInfo " + e.getClass() + ":" + e.getMessage());
+                    subscriber.onError(e);
                 }
             }
-        }, new Response.ErrorListener() {
+        }).map(new Func1<JsonElement, UserBean>() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
+            public UserBean call(JsonElement jsonElement) {
+                return new Gson().fromJson(jsonElement, UserBean.class);
             }
         });
-        request.setTag("getInfo");
-        mFastVolley.addShortRequest(HASHCODE, request);
     }
 
     @Override
@@ -157,39 +163,33 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void checkAccessToken(final Callback2<Void, Void> callback) {
+    public boolean checkAccessToken() {
         AccessToken accessToken = getAccessToken();
         Log.d(TAG, "access_token -> " + accessToken);
         if (accessToken.accessToken == null || accessToken.accessToken.isEmpty()) {
-            callback.onError(null);
-            return;
+            return false;
         }
         if (accessToken.expiresIn < SystemClock.currentThreadTimeMillis()) {
-            callback.onError(null);
-            return;
+            return false;
         }
-        mFastVolley.cancelAll(HASHCODE, "check");
         String url = ApiUrl.SERVER_CHECK + "?access_token=" + mAccessToken.accessToken;
-        JsonObjectRequest request = new JsonObjectRequest(url, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "checkAccessToken resp " + response);
-                int errcode = response.optInt("errcode");
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    callback.onSuccess(null);
-                    JPushHelper.setAlias(mUserSp.getUsername(""));
-                } else if (errcode == ServerErrorCode.ACCESS_TOKEN_EXPIRES) {
-                    callback.onError(null);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(null);
-            }
-        });
-        request.setTag("check");
+        mFastVolley.cancelAll(url);
+        RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+        JsonObjectRequest request = new JsonObjectRequest(url, requestFuture, requestFuture);
+        request.setTag(url);
         mFastVolley.addShortRequest(HASHCODE, request);
+        try {
+            JSONObject obj = requestFuture.get();
+            int errcode = obj.optInt("errcode", -1);
+            if (errcode == ServerErrorCode.SUCCESS) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "checkAccessToken " + e.getClass() + ":" + e.getMessage());
+            return false;
+        }
     }
 
     private AccessToken getAccessToken() {
@@ -207,312 +207,245 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void favor(String gid, final Callback2<Void, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "favor");
-        try {
-            JSONObject reqParams = new JSONObject().put("gid", gid);
-            String url = ApiUrl.SERVER_FAVOR + "?access_token=" + mAccessToken.accessToken;
-            JsonObjectRequest request = new JsonObjectRequest(url, reqParams, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "favor resp " + response);
-                    int errcode = response.optInt("errcode");
-                    if (errcode == ServerErrorCode.SUCCESS) {
-                        callback.onSuccess(null);
-                    } else if (errcode == ServerErrorCode.ACCESS_TOKEN_EXPIRES) {
-                        callback.onError(response.optString("errmsg"));
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    callback.onError(MsgHelper.getErrorMsg(error));
-                }
-            });
-            request.setTag("favor");
-            mFastVolley.addShortRequest(HASHCODE, request);
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public void favor(String gid) throws Exception {
+        innerFavor(gid, true);
+    }
+
+    @Override
+    public void unFavor(String gid) throws Exception {
+        innerFavor(gid, false);
+    }
+
+    private void innerFavor(String gid, boolean bFavor) throws Exception {
+        String url = bFavor ? ApiUrl.SERVER_FAVOR + "?access_token=" + mAccessToken.accessToken :
+                ApiUrl.SERVER_UNFAVOR + "?access_token=" + mAccessToken.accessToken;
+        mFastVolley.cancelAll(url);
+        JSONObject reqParams = new JSONObject().put("gid", gid);
+        RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+        JsonObjectRequest request = new JsonObjectRequest(url, reqParams, requestFuture, requestFuture);
+        request.setTag(url);
+        mFastVolley.addShortRequest(HASHCODE, request);
+        JSONObject obj = requestFuture.get();
+        int errcode = obj.optInt("errcode", -1);
+        if (errcode != ServerErrorCode.SUCCESS) {
+            throw new StockSystemException(obj.optString("errmsg"));
         }
     }
 
     @Override
-    public void unFavor(String gid, final Callback2<Void, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "unfavor");
-        try {
-            JSONObject reqParams = new JSONObject().put("gid", gid);
-            String url = ApiUrl.SERVER_UNFAVOR + "?access_token=" + mAccessToken.accessToken;
-            JsonObjectRequest request = new JsonObjectRequest(url, reqParams, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "favor resp " + response);
-                    int errcode = response.optInt("errcode");
-                    if (errcode == ServerErrorCode.SUCCESS) {
-                        callback.onSuccess(null);
+    public Observable<List<String>> listFavor() {
+        return Observable.create(new Observable.OnSubscribe<JSONArray>() {
+            @Override
+            public void call(Subscriber<? super JSONArray> subscriber) {
+                String url = ApiUrl.SERVER_LIST_FAVOR + "?access_token=" + mAccessToken.accessToken;
+                mFastVolley.cancelAll(url);
+                RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+                JsonObjectRequest request = new JsonObjectRequest(url, requestFuture, requestFuture);
+                request.setTag(url);
+                mFastVolley.addDefaultRequest(HASHCODE, request);
+                try {
+                    JSONObject obj = requestFuture.get();
+                    int errcode = obj.optInt("errcode", -1);
+                    if (errcode == ServerErrorCode.SUCCESS && obj.has("data")) {
+                        subscriber.onNext(obj.getJSONArray("data"));
+                        subscriber.onCompleted();
+                    } else {
+                        subscriber.onError(new StockSystemException(obj.optString("errmsg")));
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "listFavor " + e.getClass() + ":" + e.getMessage());
+                    subscriber.onError(e);
+                }
+            }
+        }).map(new Func1<JSONArray, List<String>>() {
+            @Override
+            public List<String> call(JSONArray jsonArray) {
+                List<String> result = new ArrayList<>(jsonArray.length());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    result.add(jsonArray.optJSONObject(i).optString("gid"));
+                }
+                return result;
+            }
+        });
+    }
+
+    @Override
+    public Observable<AccountBean> getAccount() {
+        return Observable.create(new Observable.OnSubscribe<JsonElement>() {
+            @Override
+            public void call(Subscriber<? super JsonElement> subscriber) {
+                String url = ApiUrl.SERVER_GET_ACCOUNT + "?access_token=" + mAccessToken.accessToken;
+                mFastVolley.cancelAll(url);
+                RequestFuture<JsonObject> requestFuture = RequestFuture.newFuture();
+                GsonObjectRequest request = new GsonObjectRequest(url, requestFuture, requestFuture);
+                request.setTag(url);
+                mFastVolley.addDefaultRequest(HASHCODE, request);
+                try {
+                    JsonObject obj = requestFuture.get();
+                    int errcode = obj.get("errcode").getAsInt();
+                    if (errcode == ServerErrorCode.SUCCESS && obj.has("data")) {
+                        subscriber.onNext(obj.get("data"));
+                        subscriber.onCompleted();
                     } else if (errcode == ServerErrorCode.ACCESS_TOKEN_EXPIRES) {
-                        callback.onError(response.optString("errmsg"));
+                        subscriber.onError(new StockSystemException(obj.get("errmsg").getAsString()));
                     }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    callback.onError(MsgHelper.getErrorMsg(error));
-                }
-            });
-            request.setTag("unfavor");
-            mFastVolley.addShortRequest(HASHCODE, request);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void listFavor(final Callback2<List<String>, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "listfavor");
-        String url = ApiUrl.SERVER_LIST_FAVOR + "?access_token=" + mAccessToken.accessToken;
-        JsonObjectRequest request = new JsonObjectRequest(url, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "listFavor resp " + response);
-                int errcode = response.optInt("errcode");
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    JSONArray jDataArr = response.optJSONArray("data");
-                    if (jDataArr != null) {
-                        List<String> result = new ArrayList<>(jDataArr.length());
-                        for (int i = 0; i < jDataArr.length(); i++) {
-                            result.add(jDataArr.optJSONObject(i).optString("gid"));
-                        }
-                        callback.onSuccess(result);
-                    }
-                } else if (errcode == ServerErrorCode.ACCESS_TOKEN_EXPIRES) {
-                    callback.onError(response.optString("errmsg"));
+                } catch (Exception e) {
+                    Log.e(TAG, "getAccount " + e.getClass() + ":" + e.getMessage());
+                    subscriber.onError(e);
                 }
             }
-        }, new Response.ErrorListener() {
+        }).map(new Func1<JsonElement, AccountBean>() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
+            public AccountBean call(JsonElement jsonElement) {
+                return new Gson().fromJson(jsonElement, AccountBean.class);
             }
         });
-        request.setTag("listfavor");
-        mFastVolley.addDefaultRequest(HASHCODE, request);
     }
 
     @Override
-    public void getAccount(final Callback2<AccountBean, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "getAccount");
-        String url = ApiUrl.SERVER_GET_ACCOUNT + "?access_token=" + mAccessToken.accessToken;
-        GsonObjectRequest request = new GsonObjectRequest(url, new Response.Listener<JsonObject>() {
-            @Override
-            public void onResponse(JsonObject response) {
-                Log.d(TAG, "getAccount resp " + response);
-                int errcode = response.get("errcode").getAsInt();
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    AccountBean bean = new Gson().fromJson(response.get("data"), AccountBean.class);
-                    callback.onSuccess(bean);
-                } else {
-                    callback.onError(response.get("errmsg").getAsString());
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
-            }
-        });
-        request.setTag("getAccount");
-        mFastVolley.addDefaultRequest(HASHCODE, request);
-    }
-
-    @Override
-    public void bindAccount(AccountBean accountBean, final Callback2<Void, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "bindAccount");
+    public void bindAccount(AccountBean accountBean) throws Exception {
         String url = ApiUrl.SERVER_BIND_ACCOUNT + "?access_token=" + mAccessToken.accessToken;
+        mFastVolley.cancelAll(url);
         String reqBody = new Gson().toJson(accountBean);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, reqBody, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                int errcode = response.optInt("errcode");
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    callback.onSuccess(null);
-                } else {
-                    callback.onError(response.optString("errmsg"));
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
-            }
-        });
-        request.setTag("bindAccount");
+        RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, reqBody, requestFuture, requestFuture);
+        request.setTag(url);
         mFastVolley.addShortRequest(HASHCODE, request);
+        JSONObject obj = requestFuture.get();
+        int errcode = obj.optInt("errcode", -1);
+        if (errcode != ServerErrorCode.SUCCESS) {
+            throw new StockSystemException(obj.optString("errmsg"));
+        }
     }
 
     @Override
-    public void recharge(String cardNum, String password, float money, final Callback2<Void, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "recharge");
+    public void recharge(String cardNum, String password, float money) throws Exception {
         String url = ApiUrl.SERVER_RECHARGE + "?access_token=" + mAccessToken.accessToken;
+        mFastVolley.cancelAll(url);
         JSONObject reqParams = new JSONObject();
-        try {
-            reqParams.put("cardNum", cardNum);
-            reqParams.put("password", password);
-            reqParams.put("money", money);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, reqParams, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                int errcode = response.optInt("errcode");
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    callback.onSuccess(null);
-                } else {
-                    callback.onError(response.optString("errmsg"));
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
-            }
-        });
-        request.setTag("recharge");
+        reqParams.put("cardNum", cardNum);
+        reqParams.put("password", password);
+        reqParams.put("money", money);
+        RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, reqParams, requestFuture, requestFuture);
+        request.setTag(url);
         mFastVolley.addShortRequest(HASHCODE, request);
+        JSONObject obj = requestFuture.get();
+        int errcode = obj.optInt("errcode", -1);
+        if (errcode != ServerErrorCode.SUCCESS) {
+            throw new StockSystemException(obj.optString("errmsg"));
+        }
     }
 
     @Override
-    public void listTrade(final Callback2<List<TradeBean>, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "listTrade");
-        String url = ApiUrl.SERVER_LIST_TRADE + "?access_token=" + mAccessToken.accessToken;
-        GsonObjectRequest request = new GsonObjectRequest(url, new Response.Listener<JsonObject>() {
+    public Observable<List<TradeBean>> listTrade() {
+        return Observable.create(new Observable.OnSubscribe<JsonArray>() {
             @Override
-            public void onResponse(JsonObject response) {
-                Log.d(TAG, "listTrade resp " + response);
-                int errcode = response.get("errcode").getAsInt();
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    JsonArray jArray = response.get("data").getAsJsonArray();
-                    List<TradeBean> beans = new ArrayList<>(jArray.size());
-                    for (int i = 0; i < jArray.size(); i++) {
-                        TradeBean tradeBean = new Gson().fromJson(jArray.get(i), TradeBean.class);
-                        beans.add(tradeBean);
+            public void call(Subscriber<? super JsonArray> subscriber) {
+                String url = ApiUrl.SERVER_LIST_TRADE + "?access_token=" + mAccessToken.accessToken;
+                mFastVolley.cancelAll(url);
+                RequestFuture<JsonObject> requestFuture = RequestFuture.newFuture();
+                GsonObjectRequest request = new GsonObjectRequest(url, requestFuture, requestFuture);
+                request.setTag(url);
+                mFastVolley.addDefaultRequest(HASHCODE, request);
+                try {
+                    JsonObject obj = requestFuture.get();
+                    int errcode = obj.get("errcode").getAsInt();
+                    if (errcode == ServerErrorCode.SUCCESS && obj.has("data")) {
+                        subscriber.onNext(obj.get("data").getAsJsonArray());
+                        subscriber.onCompleted();
+                    } else {
+                        subscriber.onError(new StockSystemException(obj.get("errmsg").getAsString()));
                     }
-                    callback.onSuccess(beans);
-                } else {
-                    callback.onError(response.get("errmsg").getAsString());
+                } catch (Exception e) {
+                    Log.e(TAG, "listFavor " + e.getClass() + ":" + e.getMessage());
+                    subscriber.onError(e);
                 }
             }
-        }, new Response.ErrorListener() {
+        }).map(new Func1<JsonArray, List<TradeBean>>() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
+            public List<TradeBean> call(JsonArray jsonArray) {
+                List<TradeBean> beans = new ArrayList<>(jsonArray.size());
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    TradeBean stockBean = new Gson().fromJson(jsonArray.get(i), TradeBean.class);
+                    beans.add(stockBean);
+                }
+                return beans;
             }
         });
-        request.setTag("listTrade");
-        mFastVolley.addDefaultRequest(HASHCODE, request);
     }
 
     @Override
-    public void buy(String gid, String name, float uPrice, int amount, final Callback2<Void, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "buy");
-        String url = ApiUrl.SERVER_BUY + "?access_token=" + mAccessToken.accessToken;
+    public void buy(String gid, String name, float uPrice, int amount) throws Exception {
+        innerTrade(gid, name, uPrice, amount, false);
+    }
+
+    @Override
+    public void sell(String gid, String name, float uPrice, int amount) throws Exception {
+        innerTrade(gid, name, uPrice, amount, true);
+    }
+
+    private void innerTrade(String gid, String name, float uPrice, int amount, boolean bSell) throws Exception {
+        String url = bSell ? ApiUrl.SERVER_SELL + "?access_token=" + mAccessToken.accessToken :
+                ApiUrl.SERVER_BUY + "?access_token=" + mAccessToken.accessToken;
+        mFastVolley.cancelAll(url);
         JSONObject reqParams = new JSONObject();
-        try {
-            reqParams.put("gid", gid);
-            reqParams.put("name", name);
-            reqParams.put("uPrice", uPrice);
-            reqParams.put("amount", amount);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, reqParams, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "buy resp " + response);
-                int errcode = response.optInt("errcode");
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    callback.onSuccess(null);
-                } else {
-                    callback.onError(response.optString("errmsg"));
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
-            }
-        });
-        request.setTag("buy");
+        reqParams.put("gid", gid);
+        reqParams.put("name", name);
+        reqParams.put("uPrice", uPrice);
+        reqParams.put("amount", amount);
+        RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, reqParams, requestFuture, requestFuture);
+        request.setTag(url);
         mFastVolley.addShortRequest(HASHCODE, request);
+        JSONObject obj = requestFuture.get();
+        int errcode = obj.optInt("errcode", -1);
+        if (errcode != ServerErrorCode.SUCCESS) {
+            throw new StockSystemException(obj.optString("errmsg"));
+        }
     }
 
     @Override
-    public void sell(String gid, String name, float uPrice, int amount, final Callback2<Void, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "sell");
-        String url = ApiUrl.SERVER_SELL + "?access_token=" + mAccessToken.accessToken;
-        JSONObject reqParams = new JSONObject();
-        try {
-            reqParams.put("gid", gid);
-            reqParams.put("name", name);
-            reqParams.put("uPrice", uPrice);
-            reqParams.put("amount", amount);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, reqParams, new Response.Listener<JSONObject>() {
+    public Observable<List<HoldStockBean>> listHoldStock() {
+        return Observable.create(new Observable.OnSubscribe<JsonArray>() {
             @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "sell resp " + response);
-                int errcode = response.optInt("errcode");
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    callback.onSuccess(null);
-                } else {
-                    callback.onError(response.optString("errmsg"));
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
-            }
-        });
-        request.setTag("sell");
-        mFastVolley.addShortRequest(HASHCODE, request);
-    }
-
-    @Override
-    public void listHoldStock(final Callback2<List<HoldStockBean>, String> callback) {
-        mFastVolley.cancelAll(HASHCODE, "listHoldStock");
-        String url = ApiUrl.SERVER_LIST_STOCK + "?access_token=" + mAccessToken.accessToken;
-        GsonObjectRequest request = new GsonObjectRequest(url, new Response.Listener<JsonObject>() {
-            @Override
-            public void onResponse(JsonObject response) {
-                Log.d(TAG, "listHoldStock resp " + response);
-                int errcode = response.get("errcode").getAsInt();
-                if (errcode == ServerErrorCode.SUCCESS) {
-                    JsonArray jArray = response.get("data").getAsJsonArray();
-                    List<HoldStockBean> beans = new ArrayList<>(jArray.size());
-                    for (int i = 0; i < jArray.size(); i++) {
-                        HoldStockBean stockBean = new Gson().fromJson(jArray.get(i), HoldStockBean.class);
-                        beans.add(stockBean);
+            public void call(Subscriber<? super JsonArray> subscriber) {
+                String url = ApiUrl.SERVER_LIST_STOCK + "?access_token=" + mAccessToken.accessToken;
+                mFastVolley.cancelAll(url);
+                RequestFuture<JsonObject> requestFuture = RequestFuture.newFuture();
+                GsonObjectRequest request = new GsonObjectRequest(url, requestFuture, requestFuture);
+                request.setTag(url);
+                mFastVolley.addDefaultRequest(HASHCODE, request);
+                try {
+                    JsonObject obj = requestFuture.get();
+                    int errcode = obj.get("errcode").getAsInt();
+                    if (errcode == ServerErrorCode.SUCCESS && obj.has("data")) {
+                        subscriber.onNext(obj.get("data").getAsJsonArray());
+                        subscriber.onCompleted();
+                    } else {
+                        subscriber.onError(new StockSystemException(obj.get("errmsg").getAsString()));
                     }
-                    callback.onSuccess(beans);
-                } else {
-                    callback.onError(response.get("errmsg").getAsString());
+                } catch (Exception e) {
+                    Log.e(TAG, "listFavor " + e.getClass() + ":" + e.getMessage());
+                    subscriber.onError(e);
                 }
             }
-        }, new Response.ErrorListener() {
+        }).map(new Func1<JsonArray, List<HoldStockBean>>() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.onError(MsgHelper.getErrorMsg(error));
+            public List<HoldStockBean> call(JsonArray jsonArray) {
+                List<HoldStockBean> beans = new ArrayList<>(jsonArray.size());
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    HoldStockBean stockBean = new Gson().fromJson(jsonArray.get(i), HoldStockBean.class);
+                    beans.add(stockBean);
+                }
+                return beans;
             }
         });
-        request.setTag("listHoldStock");
-        mFastVolley.addDefaultRequest(HASHCODE, request);
     }
 
     public void destroy() {
         mFastVolley.cancelAll(HASHCODE);
+        mFastVolley = null;
     }
 
 }

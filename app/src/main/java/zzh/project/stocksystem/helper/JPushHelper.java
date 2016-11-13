@@ -9,6 +9,8 @@ import cn.jpush.android.api.TagAliasCallback;
 import zzh.project.stocksystem.MyApplication;
 
 public class JPushHelper {
+
+    // 向jpush服务器设置一个别名
     public static void setAlias(String alias) {
         JPushInterface.setAlias(MyApplication.getInstance(), alias, new TagAliasCallback() {
             @Override
