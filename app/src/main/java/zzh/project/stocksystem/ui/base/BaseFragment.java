@@ -15,7 +15,6 @@ public class BaseFragment extends Fragment implements BaseView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLoading = LoadingBuilder.build(getContext());
     }
 
     @Override
@@ -35,11 +34,17 @@ public class BaseFragment extends Fragment implements BaseView {
 
     @Override
     public void showLoading() {
+        if (mLoading == null) {
+            mLoading = LoadingBuilder.build(getContext());
+        }
         mLoading.show();
     }
 
     @Override
     public void hideLoading() {
+        if (mLoading == null) {
+            mLoading = LoadingBuilder.build(getContext());
+        }
         mLoading.cancel();
     }
 }
