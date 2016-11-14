@@ -13,6 +13,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.ApiUrl;
 import zzh.project.stocksystem.MyApplication;
 import zzh.project.stocksystem.bean.StockBean;
@@ -87,7 +88,7 @@ public class StockModelJuheImpl implements StockModel {
                     subscriber.onError(e);
                 }
             }
-        }).map(new Func1<Object, StockDetailBean>() {
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).map(new Func1<Object, StockDetailBean>() {
             @Override
             public StockDetailBean call(Object o) {
                 return convert(o);
@@ -217,7 +218,7 @@ public class StockModelJuheImpl implements StockModel {
                     subscriber.onError(e);
                 }
             }
-        }).flatMap(flatMap).map(map).toList();
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).flatMap(flatMap).map(map).toList();
     }
 
     // 从网络响应的bean转成视图用的vo

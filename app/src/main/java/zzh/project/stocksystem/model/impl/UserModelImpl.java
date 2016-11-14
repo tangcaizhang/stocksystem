@@ -22,6 +22,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.ApiUrl;
 import zzh.project.stocksystem.MyApplication;
 import zzh.project.stocksystem.ServerErrorCode;
@@ -92,7 +93,7 @@ public class UserModelImpl implements UserModel {
                     Log.e(TAG, "login gen param failed, " + e.getClass() + ":" + e.getMessage());
                 }
             }
-        }).map(new Func1<JSONObject, AccessToken>() {
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).map(new Func1<JSONObject, AccessToken>() {
             @Override
             public AccessToken call(JSONObject jsonObject) {
                 AccessToken accessToken = new AccessToken();
@@ -149,7 +150,7 @@ public class UserModelImpl implements UserModel {
                     subscriber.onError(e);
                 }
             }
-        }).map(new Func1<JsonElement, UserBean>() {
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).map(new Func1<JsonElement, UserBean>() {
             @Override
             public UserBean call(JsonElement jsonElement) {
                 return new Gson().fromJson(jsonElement, UserBean.class);
@@ -257,7 +258,7 @@ public class UserModelImpl implements UserModel {
                     subscriber.onError(e);
                 }
             }
-        }).map(new Func1<JSONArray, List<String>>() {
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).map(new Func1<JSONArray, List<String>>() {
             @Override
             public List<String> call(JSONArray jsonArray) {
                 List<String> result = new ArrayList<>(jsonArray.length());
@@ -294,7 +295,7 @@ public class UserModelImpl implements UserModel {
                     subscriber.onError(e);
                 }
             }
-        }).map(new Func1<JsonElement, AccountBean>() {
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).map(new Func1<JsonElement, AccountBean>() {
             @Override
             public AccountBean call(JsonElement jsonElement) {
                 return new Gson().fromJson(jsonElement, AccountBean.class);
@@ -362,7 +363,7 @@ public class UserModelImpl implements UserModel {
                     subscriber.onError(e);
                 }
             }
-        }).map(new Func1<JsonArray, List<TradeBean>>() {
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).map(new Func1<JsonArray, List<TradeBean>>() {
             @Override
             public List<TradeBean> call(JsonArray jsonArray) {
                 List<TradeBean> beans = new ArrayList<>(jsonArray.size());
@@ -430,7 +431,7 @@ public class UserModelImpl implements UserModel {
                     subscriber.onError(e);
                 }
             }
-        }).map(new Func1<JsonArray, List<HoldStockBean>>() {
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).map(new Func1<JsonArray, List<HoldStockBean>>() {
             @Override
             public List<HoldStockBean> call(JsonArray jsonArray) {
                 List<HoldStockBean> beans = new ArrayList<>(jsonArray.size());
