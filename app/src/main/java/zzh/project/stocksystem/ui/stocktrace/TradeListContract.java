@@ -3,11 +3,11 @@ package zzh.project.stocksystem.ui.stocktrace;
 import java.util.List;
 
 import zzh.project.stocksystem.bean.TradeBean;
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface TradeListContract {
-    interface View extends BaseView {
+    interface View extends IView {
         // 清空交易记录
         void clearAllTrade();
 
@@ -18,8 +18,8 @@ interface TradeListContract {
         void setLoadingIndicator(boolean active);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 加载交易记录
-        void loadTradeList();
+        void loadTradeList(boolean manual);
     }
 }

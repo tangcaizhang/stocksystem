@@ -26,10 +26,7 @@ import zzh.project.stocksystem.bean.StockDetailBean;
 import zzh.project.stocksystem.ui.base.BaseFragment;
 import zzh.project.stocksystem.ui.win.TradePopWin;
 
-public class StockDetailFragment extends BaseFragment implements StockDetailContract.View {
-
-    private StockDetailContract.Presenter mPresenter;
-
+public class StockDetailFragment extends BaseFragment<StockDetailContract.Presenter> implements StockDetailContract.View {
     @BindView(R.id.Stock_Result_View)
     View mResultView;
     @BindView(R.id.Stock_Not_Found_View)
@@ -63,7 +60,6 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
     @BindView(R.id.Stock_TraAmount)
     TextView mTraAmount;
     FloatingActionButton mActionButton;
-
     TradePopWin mTradePopWin;
 
     private String mGid;
@@ -72,8 +68,12 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mGid = getArguments().getString("gid");
-        mPresenter = new StockDetailPresenter(this);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public StockDetailContract.Presenter createPresenter() {
+        return new StockDetailPresenter(this);
     }
 
     @Override
@@ -81,14 +81,7 @@ public class StockDetailFragment extends BaseFragment implements StockDetailCont
         View root = inflater.inflate(R.layout.frag_stock_detail, container, false);
         ButterKnife.bind(this, root);
         initView();
-        mPresenter.start();
         return root;
-    }
-
-    @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
     }
 
     private void initView() {

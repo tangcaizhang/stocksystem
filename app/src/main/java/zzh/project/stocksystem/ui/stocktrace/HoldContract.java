@@ -1,11 +1,11 @@
 package zzh.project.stocksystem.ui.stocktrace;
 
 import zzh.project.stocksystem.bean.HoldStockBean;
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface HoldContract {
-    interface View extends BaseView {
+    interface View extends IView {
         // 追加持有股票信息
         void appendHoldStock(HoldStockBean stockBean);
 
@@ -22,9 +22,9 @@ interface HoldContract {
         void hideSellPop();
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 加载持有股票
-        void loadHoldStockList();
+        void loadHoldStockList(boolean manual);
 
         // 卖出
         void sell(int amount);

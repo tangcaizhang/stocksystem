@@ -18,16 +18,17 @@ import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.bean.UserBean;
 import zzh.project.stocksystem.ui.about.AboutActivity;
+import zzh.project.stocksystem.ui.account.AccountBindActivity;
 import zzh.project.stocksystem.ui.account.AccountDetailActivity;
-import zzh.project.stocksystem.ui.account.BindActivity;
 import zzh.project.stocksystem.ui.base.BaseFragment;
 import zzh.project.stocksystem.ui.recharge.RechargeActivity;
 import zzh.project.stocksystem.ui.settings.SettingsActivity;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
-public class InfoFragment extends BaseFragment implements InfoContract.View {
+public class InfoFragment extends BaseFragment<InfoContract.Presenter> implements InfoContract.View {
     public static final int REQUEST_CODE_BIND = 0;
     public static final int REQUEST_CODE_RECHARGE = 1;
+    public static final int REQUEST_CODE_SETTINGS = 2;
 
     @BindView(R.id.rl_UserInfo_Refresh)
     ScrollChildSwipeRefreshLayout mRefreshLayout;
@@ -40,13 +41,9 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
     @BindView(R.id.tv_UserInfo_Balance)
     TextView mBalance;
 
-
-    private InfoPresenter mPresenter;
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new InfoPresenter(this);
+    public InfoContract.Presenter createPresenter() {
+        return new InfoPresenter(this);
     }
 
     @Override
@@ -57,26 +54,14 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
         return root;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
-    }
-
     private void initView() {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mPresenter.loadUserInfo();
-                mPresenter.loadAccount();
+                mPresenter.loadUserInfo(false);
+                mPresenter.loadAccount(true);
             }
         });
-    }
-
-    @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
     }
 
     @Override
@@ -111,7 +96,7 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
 
     @Override
     public void toBindAccountActivity() {
-        Intent intent = new Intent(getContext(), BindActivity.class);
+        Intent intent = new Intent(getContext(), AccountBindActivity.class);
         startActivityForResult(intent, REQUEST_CODE_BIND);
     }
 
@@ -135,7 +120,7 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
     @OnClick(R.id.rl_UserInfo_Settings)
     public void toSettingsActivity() {
         Intent intent = new Intent(getContext(), SettingsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_SETTINGS);
     }
 
     @OnClick(R.id.rl_UserInfo_About)
@@ -147,10 +132,11 @@ public class InfoFragment extends BaseFragment implements InfoContract.View {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_BIND && resultCode == Activity.RESULT_OK) {
-            mPresenter.loadAccount();
-        }
-        if (requestCode == REQUEST_CODE_RECHARGE && resultCode == Activity.RESULT_OK) {
-            mPresenter.loadUserInfo();
+            mPresenter.loadAccount(false);
+        } else if (requestCode == REQUEST_CODE_RECHARGE && resultCode == Activity.RESULT_OK) {
+            mPresenter.loadUserInfo(false);
+        } else if (requestCode == REQUEST_CODE_SETTINGS && resultCode == Activity.RESULT_OK) {
+            getActivity().finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

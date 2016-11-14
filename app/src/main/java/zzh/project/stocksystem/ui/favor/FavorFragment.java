@@ -23,19 +23,17 @@ import zzh.project.stocksystem.ui.stock.StockListAdapter;
 import zzh.project.stocksystem.ui.stockdetail.StockDetailActivity;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
-public class FavorFragment extends BaseFragment implements FavorContract.View {
+public class FavorFragment extends BaseFragment<FavorContract.Presenter> implements FavorContract.View {
     @BindView(R.id.rv_List)
     RecyclerView mRecyclerView;
     @BindView(R.id.rl_Refresh)
     ScrollChildSwipeRefreshLayout mRefreshLayout;
     private List<StockBean> mData = new ArrayList<>(0);
     private StockListAdapter mAdapter;
-    private FavorContract.Presenter mPresenter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new FavorPresenter(this);
+    public FavorContract.Presenter createPresenter() {
+        return new FavorPresenter(this);
     }
 
     @Override
@@ -44,18 +42,6 @@ public class FavorFragment extends BaseFragment implements FavorContract.View {
         ButterKnife.bind(this, root);
         initView();
         return root;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
-    }
-
-    @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
     }
 
     private void initView() {
@@ -72,7 +58,7 @@ public class FavorFragment extends BaseFragment implements FavorContract.View {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mPresenter.loadFavorList();
+                mPresenter.loadFavorList(true);
             }
         });
     }
@@ -90,17 +76,10 @@ public class FavorFragment extends BaseFragment implements FavorContract.View {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // 数据改变过
         if (requestCode == 0 && resultCode == 1) {
-            Log.d("FavorFragment", "onActivityResult");
-            mPresenter.loadFavorList();
+            Log.d(TAG, "onActivityResult requestCode=" + requestCode + ", resultCode=" + resultCode);
+            mPresenter.loadFavorList(false);
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void showFavorStock(List<StockBean> stockBeen) {
-        mData.clear();
-        mData.addAll(stockBeen);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override

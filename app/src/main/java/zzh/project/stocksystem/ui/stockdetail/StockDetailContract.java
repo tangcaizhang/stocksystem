@@ -1,11 +1,11 @@
 package zzh.project.stocksystem.ui.stockdetail;
 
 import zzh.project.stocksystem.bean.StockDetailBean;
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface StockDetailContract {
-    interface View extends BaseView {
+    interface View extends IView {
         // 显示股票信息
         void showStockDetail(StockDetailBean detail);
 
@@ -25,7 +25,7 @@ interface StockDetailContract {
         void hideBuyPop();
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 加载股票信息
         void loadStockDetail();
 

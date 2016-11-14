@@ -15,7 +15,7 @@ public class JPushHelper {
         JPushInterface.setAlias(MyApplication.getInstance(), alias, new TagAliasCallback() {
             @Override
             public void gotResult(int i, String s, Set<String> set) {
-                Log.d("JPushHelper", "gotResult " + i);
+                Log.d("JPushHelper", "gotResult " + i + ", " + s);
             }
         });
     }

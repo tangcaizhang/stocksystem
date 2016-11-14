@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 
 import java.util.Set;
 
-public class CommonSp {
+/**
+ * 通用SharedPreferences
+ */
+class CommonSp {
     private SharedPreferences mSharePre;
 
     protected CommonSp(Context context, String spName) {

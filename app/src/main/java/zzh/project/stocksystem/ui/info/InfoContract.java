@@ -2,11 +2,11 @@ package zzh.project.stocksystem.ui.info;
 
 import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.bean.UserBean;
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface InfoContract {
-    interface View extends BaseView {
+    interface View extends IView {
         // 显示loading图标
         void setLoadingIndicator(boolean active);
 
@@ -29,12 +29,12 @@ interface InfoContract {
         void toAccountDetailActivity(AccountBean accountBean);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 加载用户信息
-        void loadUserInfo();
+        void loadUserInfo(boolean manual);
 
         // 加载卡号详情
-        void loadAccount();
+        void loadAccount(boolean manual);
 
         // 充值
         void recharge();

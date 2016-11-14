@@ -14,10 +14,7 @@ import butterknife.OnClick;
 import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.ui.base.BaseFragment;
 
-public class RegisterFragment extends BaseFragment implements RegisterContract.View {
-    private static final String TAG = RegisterFragment.class.getSimpleName();
-    private RegisterContract.Presenter mPresenter;
-
+public class RegisterFragment extends BaseFragment<RegisterContract.Presenter> implements RegisterContract.View {
     @BindView(R.id.til_Register_Username_Wrapper)
     TextInputLayout mUsernameWrapper;
     @BindView(R.id.et_Register_Username)
@@ -40,9 +37,8 @@ public class RegisterFragment extends BaseFragment implements RegisterContract.V
     EditText mRePass;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new RegisterPresenter(this);
+    public RegisterContract.Presenter createPresenter() {
+        return new RegisterPresenter(this);
     }
 
     @Nullable
@@ -53,14 +49,8 @@ public class RegisterFragment extends BaseFragment implements RegisterContract.V
         return root;
     }
 
-    @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
-    }
-
     @OnClick(R.id.btn_Register)
-    public void register(View view) {
+    public void register() {
         clearErrorHit();
         if (checkInputValidate()) {
             mPresenter.register();
@@ -110,22 +100,22 @@ public class RegisterFragment extends BaseFragment implements RegisterContract.V
 
     @Override
     public String getUsername() {
-        return mUsername.getText().toString();
+        return mUsername.getText().toString().trim();
     }
 
     @Override
     public String getEmail() {
-        return mEmail.getText().toString();
+        return mEmail.getText().toString().trim();
     }
 
     @Override
     public String getPassword() {
-        return mPass.getText().toString();
+        return mPass.getText().toString().trim();
     }
 
     @Override
     public String getNick() {
-        return mNick.getText().toString();
+        return mNick.getText().toString().trim();
     }
 
     @Override

@@ -23,21 +23,19 @@ import zzh.project.stocksystem.ui.base.BaseFragment;
 import zzh.project.stocksystem.ui.win.TradePopWin;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
-public class HoldFragment extends BaseFragment implements HoldContract.View {
+public class HoldFragment extends BaseFragment<HoldContract.Presenter> implements HoldContract.View {
     @BindView(R.id.rv_List)
     RecyclerView mRecyclerView;
     @BindView(R.id.rl_Refresh)
     ScrollChildSwipeRefreshLayout mRefreshLayout;
-    private HoldContract.Presenter mPresenter;
     private HoldStockAdapter mAdapter;
     private List<HoldStockBean> mData = new ArrayList<>(0);
     private TradePopWin mSellPopWin;
     private HoldStockBean mSelectedStock;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new HoldPresenter(this);
+    public HoldContract.Presenter createPresenter() {
+        return new HoldPresenter(this);
     }
 
     @Override
@@ -49,15 +47,8 @@ public class HoldFragment extends BaseFragment implements HoldContract.View {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
-    }
-
-    @Override
     public void onDetach() {
         mSelectedStock = null;
-        mPresenter.destroy();
         super.onDetach();
     }
 
@@ -82,7 +73,7 @@ public class HoldFragment extends BaseFragment implements HoldContract.View {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mPresenter.loadHoldStockList();
+                mPresenter.loadHoldStockList(true);
             }
         });
         mSellPopWin = new TradePopWin(getContext());

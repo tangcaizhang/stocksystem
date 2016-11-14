@@ -23,15 +23,14 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import java.io.File;
 
 import cn.jpush.android.api.JPushInterface;
-import zzh.project.stocksystem.model.SettingsModel;
+import zzh.project.stocksystem.helper.JPushHelper;
 import zzh.project.stocksystem.model.impl.SettingsModelImpl;
 import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
 import zzh.project.stocksystem.model.impl.UserModelImpl;
 import zzh.project.stocksystem.volley.FastVolley;
 
 public class MyApplication extends Application {
-    public static final String TAG = MyApplication.class.getSimpleName();
-    public static final boolean DEBUG = EnvConst.DEBUG;
+    private final String TAG = this.getClass().getSimpleName();
     private static MyApplication sInstance;
 
     public static MyApplication getInstance() {
@@ -42,7 +41,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        if (DEBUG) {
+        if (EnvConst.DEBUG) {
             Log.d(TAG, "onCreate");
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
@@ -50,6 +49,7 @@ public class MyApplication extends Application {
         initNetWorkStatusObservable();
         initImageLoader(this);
         initJPush(this);
+        initGlobalUncaughtExceptionHandler();
 
         // 初始设置项
         if (SettingsModelImpl.getInstance().isEnablePush()) {
@@ -117,21 +117,34 @@ public class MyApplication extends Application {
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config);
 
-//        if (!DEBUG) {
+        if (!EnvConst.DEBUG) {
             L.disableLogging();
-//        }
+        }
     }
 
     /********************** 初始化jpush ***************/
     private void initJPush(Context context) {
-        JPushInterface.setDebugMode(true);
+        JPushInterface.setDebugMode(EnvConst.DEBUG);
         JPushInterface.init(context);
+        // 修改别名，防止收到推送
+        JPushHelper.setAlias("null");
+    }
+
+    /********************** 初始化全局异常捕获 ***************/
+    private void initGlobalUncaughtExceptionHandler() {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                // TODO save log
+                destroy();
+            }
+        });
     }
 
     // 回收资源
     public void destroy() {
-        if (DEBUG) {
-            Log.d(TAG, "onCreate");
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "destroy");
         }
         if (mNetWorkObservable != null) {
             mNetWorkObservable.release();

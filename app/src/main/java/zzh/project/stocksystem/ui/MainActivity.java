@@ -13,7 +13,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import zzh.project.stocksystem.R;
-import zzh.project.stocksystem.ui.base.BaseActivity;
+import zzh.project.stocksystem.ui.base.BaseStackActivity;
 import zzh.project.stocksystem.ui.favor.FavorFragment;
 import zzh.project.stocksystem.ui.info.InfoFragment;
 import zzh.project.stocksystem.ui.news.NewsFragment;
@@ -21,7 +21,7 @@ import zzh.project.stocksystem.ui.stock.StockFragment;
 import zzh.project.stocksystem.ui.stocktrace.TradeFragment;
 import zzh.project.stocksystem.util.ToastUtil;
 
-public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends BaseStackActivity implements RadioGroup.OnCheckedChangeListener {
     public static final String ARGUMENT_PAGE_INDEX = "page_index";
 
     @BindView(R.id.vp_Main_Content)

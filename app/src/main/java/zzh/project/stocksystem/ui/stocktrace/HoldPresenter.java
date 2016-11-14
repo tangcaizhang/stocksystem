@@ -2,51 +2,56 @@ package zzh.project.stocksystem.ui.stocktrace;
 
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.HoldStockBean;
 import zzh.project.stocksystem.bean.StockDetailBean;
-import zzh.project.stocksystem.model.Callback2;
+import zzh.project.stocksystem.helper.MsgHelper;
 import zzh.project.stocksystem.model.StockModel;
 import zzh.project.stocksystem.model.UserModel;
 import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
 import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.ui.base.BasePresenter;
 
-public class HoldPresenter implements HoldContract.Presenter {
-
-    private HoldContract.View mView;
+class HoldPresenter extends BasePresenter<HoldContract.View> implements HoldContract.Presenter {
     private UserModel mUserModel;
     private StockModel mStockModel;
 
-    public HoldPresenter(HoldContract.View view) {
-        mView = view;
+    HoldPresenter(HoldContract.View view) {
+        super(view);
         mUserModel = UserModelImpl.getInstance();
         mStockModel = StockModelJuheImpl.getInstance();
     }
 
+    @Override
+    public void doFirst() {
+        loadHoldStockList(false);
+    }
 
     @Override
-    public void loadHoldStockList() {
-        mView.setLoadingIndicator(true);
-        mUserModel.listHoldStock(new Callback2<List<HoldStockBean>, String>() {
-            @Override
-            public void onSuccess(List<HoldStockBean> holdStockBeen) {
-                if (mView != null && mView.isActive()) {
-                    mView.clearAllHoldStock();
-                    final int taskCount = holdStockBeen.size();
-                    if (taskCount == 0) {
-                        mView.setLoadingIndicator(false);
-                        return;
+    public void loadHoldStockList(final boolean manual) {
+        if (manual) {
+            mView.setLoadingIndicator(true);
+        }
+        mView.clearAllHoldStock();
+        // 这里任务链有点复杂
+        Subscription subscription = mUserModel.listHoldStock() // 拿到的HoldStockBean数据不全
+                .observeOn(Schedulers.io()).flatMap(new Func1<List<HoldStockBean>, Observable<HoldStockBean>>() { // 切换到单一遍历
+                    @Override
+                    public Observable<HoldStockBean> call(List<HoldStockBean> holdStockBeen) {
+                        return Observable.from(holdStockBeen);
                     }
-                    for (int i = 0; i < holdStockBeen.size(); i++) {
-                        final int taskId = i;
-                        final int total = holdStockBeen.get(i).total;
-                        mStockModel.getDetail(holdStockBeen.get(i).gid, new Callback2<StockDetailBean, String>() {
-                            @Override
-                            public void onSuccess(StockDetailBean detailBean) {
-                                if (mView != null && mView.isActive()) {
-                                    if (taskId == taskCount - 1) {
-                                        mView.setLoadingIndicator(false);
-                                    }
-                                    if (detailBean != null) {
+                }).observeOn(Schedulers.io()).flatMap(new Func1<HoldStockBean, Observable<HoldStockBean>>() { // 转换成具有详细信息的HoldStockBean数据集
+                    @Override
+                    public Observable<HoldStockBean> call(final HoldStockBean holdStockBean) {
+                        return mStockModel.getDetail(holdStockBean.gid)
+                                .observeOn(Schedulers.io()).map(new Func1<StockDetailBean, HoldStockBean>() {
+                                    @Override
+                                    public HoldStockBean call(StockDetailBean detailBean) {
                                         HoldStockBean bean = new HoldStockBean();
                                         bean.gid = detailBean.gid;
                                         bean.thumbUrl = detailBean.dayUrl;
@@ -54,72 +59,86 @@ public class HoldPresenter implements HoldContract.Presenter {
                                         bean.increase = detailBean.increase;
                                         bean.name = detailBean.name;
                                         bean.nowPri = detailBean.nowPri;
-                                        bean.total = total;
-                                        mView.appendHoldStock(bean);
+                                        bean.total = holdStockBean.total;
+                                        return bean;
                                     }
-                                }
-                            }
-
-                            @Override
-                            public void onError(String s) {
-                                if (mView != null && mView.isActive()) {
-                                    mView.setLoadingIndicator(false);
-                                    mView.showErrorMessage(s);
-                                }
-                            }
-                        });
+                                });
                     }
-                }
-            }
+                }).observeOn(Schedulers.computation()).toList() // 再重新整合为List数据源
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<HoldStockBean>>() {
+                    @Override
+                    public void onCompleted() {
+                        if (manual && mView != null && mView.isActive()) {
+                            mView.setLoadingIndicator(false);
+                        }
+                    }
 
-            @Override
-            public void onError(String s) {
-                if (mView != null && mView.isActive()) {
-                    mView.setLoadingIndicator(false);
-                    mView.showErrorMessage(s);
-                }
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        if (mView != null && mView.isActive()) {
+                            if (manual) {
+                                mView.setLoadingIndicator(false);
+                            }
+                            mView.showErrorMessage(MsgHelper.getErrorMsg(e));
+                        }
+                    }
+
+                    @Override
+                    public void onNext(List<HoldStockBean> holdStockBeans) {
+                        if (mView != null && mView.isActive()) {
+                            for (HoldStockBean holdStockBean : holdStockBeans) {
+                                mView.appendHoldStock(holdStockBean);
+                            }
+                        }
+                    }
+                });
+        mSubscription.add(subscription);
     }
 
     @Override
-    public void sell(int amount) {
+    public void sell(final int amount) {
         mView.showLoading();
-        HoldStockBean selected = mView.getSelected();
+        final HoldStockBean selected = mView.getSelected();
         if (selected == null) {
             return;
         }
-        String gid = selected.gid;
-        String name = selected.name;
-        float uPrice = Float.parseFloat(selected.nowPri);
-        mUserModel.sell(gid, name, uPrice, amount, new Callback2<Void, String>() {
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
-            public void onSuccess(Void aVoid) {
+            public void call(Subscriber<? super Void> subscriber) {
+                String gid = selected.gid;
+                String name = selected.name;
+                float uPrice = Float.parseFloat(selected.nowPri);
+                try {
+                    mUserModel.sell(gid, name, uPrice, amount);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
                 if (mView != null && mView.isActive()) {
                     mView.hideLoading();
                     mView.showMessage("抛售成功");
                     mView.hideSellPop();
-                    loadHoldStockList();
+                    loadHoldStockList(false);
                 }
             }
 
             @Override
-            public void onError(String s) {
+            public void onError(Throwable e) {
                 if (mView != null && mView.isActive()) {
                     mView.hideLoading();
-                    mView.showErrorMessage(s);
+                    mView.showErrorMessage(MsgHelper.getErrorMsg(e));
                 }
             }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
         });
-    }
-
-    @Override
-    public void start() {
-        loadHoldStockList();
-    }
-
-    @Override
-    public void destroy() {
-        mView = null;
+        mSubscription.add(subscription);
     }
 }

@@ -8,9 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import zzh.project.stocksystem.R;
-import zzh.project.stocksystem.ui.base.BaseActivity;
+import zzh.project.stocksystem.ui.base.BaseStackActivity;
 
-public class StockDetailActivity extends BaseActivity {
+public class StockDetailActivity extends BaseStackActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

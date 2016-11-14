@@ -1,61 +1,93 @@
 package zzh.project.stocksystem.ui.info;
 
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.bean.UserBean;
-import zzh.project.stocksystem.model.Callback2;
+import zzh.project.stocksystem.helper.MsgHelper;
 import zzh.project.stocksystem.model.UserModel;
+import zzh.project.stocksystem.model.exception.StockSystemException;
 import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.ui.base.BasePresenter;
 
-public class InfoPresenter implements InfoContract.Presenter {
+class InfoPresenter extends BasePresenter<InfoContract.View> implements InfoContract.Presenter {
     private UserModel mUserModel;
-    private InfoContract.View mView;
     private AccountBean mAccountBean;
 
-    public InfoPresenter(InfoContract.View view) {
-        mView = view;
+    InfoPresenter(InfoContract.View view) {
+        super(view);
         mUserModel = UserModelImpl.getInstance();
     }
 
     @Override
-    public void loadUserInfo() {
-        mView.setLoadingIndicator(true);
-        mUserModel.getInfo(new Callback2<UserBean, String>() {
+    public void loadUserInfo(final boolean manual) {
+        if (manual) {
+            mView.setLoadingIndicator(true);
+        }
+        Subscription subscription = mUserModel.getInfo().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<UserBean>() {
             @Override
-            public void onSuccess(UserBean userBean) {
-                mView.setLoadingIndicator(false);
+            public void onCompleted() {
+                if (manual && mView != null && mView.isActive()) {
+                    mView.setLoadingIndicator(false);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (mView != null && mView.isActive()) {
+                    if (manual) {
+                        mView.setLoadingIndicator(false);
+                    }
+                    mView.showErrorMessage(MsgHelper.getErrorMsg(e));
+                }
+            }
+
+            @Override
+            public void onNext(UserBean userBean) {
                 if (mView != null && mView.isActive()) {
                     mView.showUserInfo(userBean);
                 }
             }
-
-            @Override
-            public void onError(String s) {
-                mView.setLoadingIndicator(false);
-                if (mView != null && mView.isActive()) {
-                    mView.showErrorMessage(s);
-                }
-            }
         });
+        mSubscription.add(subscription);
     }
 
     @Override
-    public void loadAccount() {
-        mUserModel.getAccount(new Callback2<AccountBean, String>() {
+    public void loadAccount(final boolean manual) {
+        if (manual) {
+            mView.setLoadingIndicator(true);
+        }
+        Subscription subscription = mUserModel.getAccount().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<AccountBean>() {
             @Override
-            public void onSuccess(AccountBean accountBean) {
-                if (mView != null && mView.isActive()) {
-                    mAccountBean = accountBean;
-                    mView.showAccount(accountBean == null ? null : accountBean.cardNum);
+            public void onCompleted() {
+                if (manual && mView != null && mView.isActive()) {
+                    mView.setLoadingIndicator(false);
                 }
             }
 
             @Override
-            public void onError(String s) {
+            public void onError(Throwable e) {
+                if (e instanceof StockSystemException) {
+                    mAccountBean = null;
+                }
                 if (mView != null && mView.isActive()) {
+                    if (manual) {
+                        mView.setLoadingIndicator(false);
+                    }
                     mView.showAccount(null);
                 }
             }
+
+            @Override
+            public void onNext(AccountBean accountBean) {
+                mAccountBean = accountBean;
+                if (mView != null && mView.isActive()) {
+                    mView.showAccount(accountBean == null ? null : accountBean.cardNum);
+                }
+            }
         });
+        mSubscription.add(subscription);
     }
 
     @Override
@@ -77,13 +109,8 @@ public class InfoPresenter implements InfoContract.Presenter {
     }
 
     @Override
-    public void start() {
-        loadUserInfo();
-        loadAccount();
-    }
-
-    @Override
-    public void destroy() {
-        mView = null;
+    public void doFirst() {
+        loadUserInfo(false);
+        loadAccount(false);
     }
 }

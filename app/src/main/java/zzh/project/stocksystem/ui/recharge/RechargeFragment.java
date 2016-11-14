@@ -15,7 +15,7 @@ import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.ui.base.BaseFragment;
 
-public class RechargeFragment extends BaseFragment implements RechargeContract.View {
+public class RechargeFragment extends BaseFragment<RechargeContract.Presenter> implements RechargeContract.View {
     public static final String ARGUMENT_ACCOUNT = "account";
 
     @BindView(R.id.tv_Recharge_CardNum)
@@ -25,21 +25,17 @@ public class RechargeFragment extends BaseFragment implements RechargeContract.V
     @BindView(R.id.tv_Recharge_Pass)
     TextView mPass;
 
-    RechargeContract.Presenter mPresenter;
-
     AccountBean mAccount;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new RechargePresenter(this);
         mAccount = (AccountBean) getArguments().getSerializable(ARGUMENT_ACCOUNT);
     }
 
     @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
+    public RechargeContract.Presenter createPresenter() {
+        return new RechargePresenter(this);
     }
 
     @Nullable

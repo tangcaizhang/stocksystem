@@ -16,8 +16,8 @@
 
 package zzh.project.stocksystem.ui.base;
 
-public interface BaseView {
-
+public interface IView {
+    // 是否可用（不是可见）
     boolean isActive();
 
     // 显示消息

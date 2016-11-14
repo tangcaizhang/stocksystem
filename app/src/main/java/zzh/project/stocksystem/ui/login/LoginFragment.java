@@ -1,6 +1,5 @@
 package zzh.project.stocksystem.ui.login;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,18 +16,8 @@ import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.ui.MainActivity;
 import zzh.project.stocksystem.ui.base.BaseFragment;
 import zzh.project.stocksystem.ui.register.RegisterActivity;
-import zzh.project.stocksystem.util.LoadingBuilder;
 
-public class LoginFragment extends BaseFragment implements LoginContract.View {
-    private static final String TAG = LoginFragment.class.getSimpleName();
-    private LoginContract.Presenter mPresenter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new LoginPresenter(this);
-    }
-
+public class LoginFragment extends BaseFragment<LoginContract.Presenter> implements LoginContract.View {
     @BindView(R.id.et_Login_Username)
     EditText mUsername;
     @BindView(R.id.et_Login_Pass)
@@ -38,19 +27,17 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
     @BindView(R.id.til_Login_Pass_Wrapper)
     TextInputLayout mPasswordWrapper;
 
+    @Override
+    public LoginContract.Presenter createPresenter() {
+        return new LoginPresenter(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.frag_login, container, false);
         ButterKnife.bind(this, root);
-        mPresenter.start();
         return root;
-    }
-
-    @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
     }
 
     @OnClick(R.id.btn_Login)
@@ -93,12 +80,12 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
 
     @Override
     public String getUsername() {
-        return mUsername.getText().toString();
+        return mUsername.getText().toString().trim();
     }
 
     @Override
     public String getPassword() {
-        return mPassword.getText().toString();
+        return mPassword.getText().toString().trim();
     }
 
     @Override

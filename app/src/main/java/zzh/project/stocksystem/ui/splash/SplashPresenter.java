@@ -4,23 +4,26 @@ package zzh.project.stocksystem.ui.splash;
 import android.os.Handler;
 import android.os.SystemClock;
 
-import zzh.project.stocksystem.model.Callback2;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.ui.base.BasePresenter;
 
-public class SplashPresenter implements SplashContract.Presenter {
-    private static final String TAG = SplashPresenter.class.getSimpleName();
-    private SplashContract.View mView;
+class SplashPresenter extends BasePresenter<SplashContract.View> implements SplashContract.Presenter {
     private UserModelImpl mUserModel;
     private Handler mHandler = new Handler();
     private Runnable mGoTask;
 
-    public SplashPresenter(SplashContract.View view) {
-        mView = view;
+    SplashPresenter(SplashContract.View view) {
+        super(view);
         mUserModel = UserModelImpl.getInstance();
     }
 
     @Override
-    public void start() {
+    public void doFirst() {
         doInit();
     }
 
@@ -30,26 +33,26 @@ public class SplashPresenter implements SplashContract.Presenter {
             mHandler.removeCallbacks(mGoTask);
             mGoTask = null;
         }
-        mView = null;
+        super.destroy();
     }
 
     @Override
     public void doInit() {
         final long start = SystemClock.currentThreadTimeMillis();
-        mUserModel.checkAccessToken(new Callback2<Void, Void>() {
+        mSubscription.clear();
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                mGoTask = new Runnable() {
-                    @Override
-                    public void run() {
-                        mView.toMainActivity();
-                    }
-                };
-                mHandler.postDelayed(mGoTask, 1000 - (SystemClock.currentThreadTimeMillis() - start));
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onNext(mUserModel.checkAccessToken());
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
             }
 
             @Override
-            public void onError(Void aVoid) {
+            public void onError(Throwable e) {
                 mGoTask = new Runnable() {
                     @Override
                     public void run() {
@@ -58,6 +61,22 @@ public class SplashPresenter implements SplashContract.Presenter {
                 };
                 mHandler.postDelayed(mGoTask, 1000 - (SystemClock.currentThreadTimeMillis() - start));
             }
+
+            @Override
+            public void onNext(final Boolean bSucc) {
+                mGoTask = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (bSucc) {
+                            mView.toMainActivity();
+                        } else {
+                            mView.toLoginActivity();
+                        }
+                    }
+                };
+                mHandler.postDelayed(mGoTask, 1000 - (SystemClock.currentThreadTimeMillis() - start));
+            }
         });
+        mSubscription.add(subscription);
     }
 }

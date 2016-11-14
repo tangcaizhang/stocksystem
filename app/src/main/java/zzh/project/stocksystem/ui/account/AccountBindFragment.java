@@ -15,7 +15,7 @@ import butterknife.OnClick;
 import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.ui.base.BaseFragment;
 
-public class BindFragment extends BaseFragment implements BindContract.View {
+public class AccountBindFragment extends BaseFragment<AccountBindContract.Presenter> implements AccountBindContract.View {
     @BindView(R.id.til_BindCard_CardNum_Wrapper)
     TextInputLayout mCardNumWrapper;
     @BindView(R.id.et_BindCard_CardNum)
@@ -37,18 +37,9 @@ public class BindFragment extends BaseFragment implements BindContract.View {
     @BindView(R.id.et_BindCard_RePass)
     EditText mRePass;
 
-    BindContract.Presenter mPresenter;
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new BindPresenter(this);
-    }
-
-    @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
+    public AccountBindContract.Presenter createPresenter() {
+        return new AccountBindPresenter(this);
     }
 
     @Nullable

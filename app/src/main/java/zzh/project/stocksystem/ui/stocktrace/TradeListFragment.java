@@ -19,19 +19,17 @@ import zzh.project.stocksystem.bean.TradeBean;
 import zzh.project.stocksystem.ui.base.BaseFragment;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
-public class TradeListFragment extends BaseFragment implements TradeListContract.View {
+public class TradeListFragment extends BaseFragment<TradeListContract.Presenter> implements TradeListContract.View {
     @BindView(R.id.rv_List)
     RecyclerView mRecyclerView;
     @BindView(R.id.rl_Refresh)
     ScrollChildSwipeRefreshLayout mRefreshLayout;
-    TradeListPresenter mPresenter;
     private List<TradeBean> mData = new ArrayList<>(0);
     private TradeListAdapter mAdapter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new TradeListPresenter(this);
+    public TradeListContract.Presenter createPresenter() {
+        return new TradeListPresenter(this);
     }
 
     @Override
@@ -50,21 +48,9 @@ public class TradeListFragment extends BaseFragment implements TradeListContract
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mPresenter.loadTradeList();
+                mPresenter.loadTradeList(true);
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
-    }
-
-    @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
     }
 
     @Override

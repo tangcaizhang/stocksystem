@@ -1,88 +1,100 @@
 package zzh.project.stocksystem.ui.stock;
 
-import android.util.Log;
-
 import java.util.List;
 
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.StockBean;
 import zzh.project.stocksystem.bean.StockListType;
-import zzh.project.stocksystem.model.Callback2;
 import zzh.project.stocksystem.model.StockModel;
 import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
+import zzh.project.stocksystem.ui.base.BasePresenter;
 
-public class StockListPresenter implements StockListContract.Presenter {
-    public static final String TAG = StockListPresenter.class.getSimpleName();
-    private StockListContract.View mView;
+class StockListPresenter extends BasePresenter<StockListContract.View> implements StockListContract.Presenter {
     private StockModel mStockModel;
     private int mCurPage = 0;
 
-    public StockListPresenter(StockListContract.View view) {
-        mView = view;
+    StockListPresenter(StockListContract.View view) {
+        super(view);
         mStockModel = StockModelJuheImpl.getInstance();
     }
 
     @Override
-    public void loadStocks() {
+    public void doFirst() {
+        loadStocks(false);
+    }
+
+    @Override
+    public void loadStocks(boolean manual) {
+        if (manual) {
+            mView.setLoadingIndicator(true);
+        }
         mCurPage = 0;
-        Callback2<List<StockBean>, String> callback = new Callback2<List<StockBean>, String>() {
+        loadStocks(0, new Subscriber<List<StockBean>>() {
             @Override
-            public void onSuccess(List<StockBean> stockBeen) {
+            public void onCompleted() {
                 if (mView != null && mView.isActive()) {
                     mView.setLoadingIndicator(false);
-                    mView.showStocks(stockBeen);
                 }
             }
 
             @Override
-            public void onError(String s) {
+            public void onError(Throwable e) {
                 if (mView != null && mView.isActive()) {
                     mView.setLoadingIndicator(false);
-                    mView.showErrorMessage(s);
                 }
             }
-        };
-        loadStocks(mCurPage, callback);
+
+            @Override
+            public void onNext(List<StockBean> stockBeen) {
+                if (mView != null && mView.isActive()) {
+                    mView.showStocks(stockBeen);
+                }
+            }
+        });
     }
 
     @Override
     public void loadMore() {
         mCurPage++;
-        Callback2<List<StockBean>, String> callback = new Callback2<List<StockBean>, String>() {
+        loadStocks(mCurPage, new Subscriber<List<StockBean>>() {
             @Override
-            public void onSuccess(List<StockBean> stockBeen) {
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
                 if (mView != null && mView.isActive()) {
-                    mView.appendStocks(stockBeen);
+                    mView.appendStocks(null);
+                    mCurPage--;
                 }
             }
 
             @Override
-            public void onError(String s) {
-                mView.appendStocks(null);
-                mCurPage--;
+            public void onNext(List<StockBean> stockBeen) {
+                if (mView != null && mView.isActive()) {
+                    mView.appendStocks(stockBeen);
+                }
             }
-        };
-        loadStocks(mCurPage, callback);
+        });
     }
 
-    private void loadStocks(int page, Callback2<List<StockBean>, String> callback) {
+    private void loadStocks(int page, Subscriber<List<StockBean>> subscriber) {
+        Subscription subscription = null;
         if (mView.getType() == StockListType.SH) {
-            mStockModel.findAllSH(page, callback);
+            subscription = mStockModel.findAllSH(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
         } else if (mView.getType() == StockListType.SZ) {
-            mStockModel.findAllSZ(page, callback);
+            subscription = mStockModel.findAllSZ(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
         } else if (mView.getType() == StockListType.HK) {
-            mStockModel.findAllHK(page, callback);
+            subscription = mStockModel.findAllHK(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
         } else if (mView.getType() == StockListType.USA) {
-            mStockModel.findAllUS(page, callback);
+            subscription = mStockModel.findAllUS(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
         }
-    }
-
-    @Override
-    public void start() {
-        loadStocks();
-    }
-
-    @Override
-    public void destroy() {
-        mView = null;
+        if (subscription != null) {
+            mSubscription.add(subscription);
+        }
     }
 }

@@ -9,9 +9,9 @@ import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
 import zzh.project.stocksystem.R;
-import zzh.project.stocksystem.ui.base.BaseActivity;
+import zzh.project.stocksystem.ui.base.BaseStackActivity;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseStackActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

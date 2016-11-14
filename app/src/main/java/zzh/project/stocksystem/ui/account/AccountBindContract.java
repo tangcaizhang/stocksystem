@@ -1,10 +1,10 @@
 package zzh.project.stocksystem.ui.account;
 
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
-interface BindContract {
-    interface View extends BaseView {
+interface AccountBindContract {
+    interface View extends IView {
         // 获取卡号
         String getCardNum();
 
@@ -21,7 +21,7 @@ interface BindContract {
         void close();
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 绑定卡片
         void bindAccount();
     }

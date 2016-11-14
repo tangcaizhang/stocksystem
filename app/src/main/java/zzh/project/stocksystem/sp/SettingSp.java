@@ -9,7 +9,7 @@ public class SettingSp extends CommonSp {
     /* known key */
     private static final String KEY_PUSH = "jpush";
 
-    public static final SettingSp getInstance(Context context) {
+    public static SettingSp getInstance(Context context) {
         if (instance == null) {
             synchronized (SettingSp.class) {
                 if (instance == null) {

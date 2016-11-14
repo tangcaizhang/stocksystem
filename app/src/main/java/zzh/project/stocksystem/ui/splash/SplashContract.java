@@ -1,15 +1,15 @@
 package zzh.project.stocksystem.ui.splash;
 
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface SplashContract {
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 执行初始化
         void doInit();
     }
 
-    interface View extends BaseView {
+    interface View extends IView {
         // 跳转到主视图
         void toMainActivity();
 

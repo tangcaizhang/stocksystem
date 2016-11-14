@@ -12,7 +12,7 @@ public class UserSp extends CommonSp {
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_EXPIRES_IN = "expires_in";// 过期时间，时间戳
 
-    public static final UserSp getInstance(Context context) {
+    public static UserSp getInstance(Context context) {
         if (instance == null) {
             synchronized (UserSp.class) {
                 if (instance == null) {

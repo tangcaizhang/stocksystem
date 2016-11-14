@@ -7,12 +7,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.zhy.autolayout.AutoLayoutActivity;
-
 import zzh.project.stocksystem.R;
-import zzh.project.stocksystem.ui.base.BaseActivity;
+import zzh.project.stocksystem.ui.base.BaseStackActivity;
 
-public class RegisterActivity extends BaseActivity {
+public class RegisterActivity extends BaseStackActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

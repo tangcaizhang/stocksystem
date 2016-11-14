@@ -8,9 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import zzh.project.stocksystem.R;
-import zzh.project.stocksystem.ui.base.BaseActivity;
+import zzh.project.stocksystem.ui.base.BaseStackActivity;
 
-public class BindActivity extends BaseActivity {
+public class AccountBindActivity extends BaseStackActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +23,7 @@ public class BindActivity extends BaseActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.contentFrame, new BindFragment());
+        transaction.add(R.id.contentFrame, new AccountBindFragment());
         transaction.commit();
     }
 

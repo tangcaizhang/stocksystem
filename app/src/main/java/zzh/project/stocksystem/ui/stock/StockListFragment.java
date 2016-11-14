@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import zzh.project.stocksystem.ui.base.BaseFragment;
 import zzh.project.stocksystem.ui.stockdetail.StockDetailActivity;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
-public class StockListFragment extends BaseFragment implements StockListContract.View {
+public class StockListFragment extends BaseFragment<StockListContract.Presenter> implements StockListContract.View {
 
     @BindView(R.id.rl_StockList_Refresh)
     ScrollChildSwipeRefreshLayout mRefreshLayout;
@@ -35,33 +34,30 @@ public class StockListFragment extends BaseFragment implements StockListContract
     RecyclerView mRecyclerView;
     LoadMoreWrapper mAdapter;
     LinearLayoutManager mLayoutManager;
+    View mLoadMore;
+
     private StockListType mType;
-    private StockListPresenter mPresenter;
-    private List<StockBean> mDatas = new ArrayList<>(0);
-    private View mLoadMore;
+    private List<StockBean> mData = new ArrayList<>(0);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mType = (StockListType) getArguments().getSerializable("type");
-        mPresenter = new StockListPresenter(this);
+    }
+
+    @Override
+    public StockListContract.Presenter createPresenter() {
+        return new StockListPresenter(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.frag_stock_list, container, false);
-        ButterKnife.bind(this, root);
         mLoadMore = buildLoadMoreView();
+        ButterKnife.bind(this, root);
         initView();
-        mPresenter.start();
         return root;
-    }
-
-    @Override
-    public void onDetach() {
-        mPresenter.destroy();
-        super.onDetach();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -84,7 +80,7 @@ public class StockListFragment extends BaseFragment implements StockListContract
     }
 
     private void initView() {
-        StockListAdapter innerAdapter = new StockListAdapter(getContext(), mDatas);
+        StockListAdapter innerAdapter = new StockListAdapter(getContext(), mData);
         innerAdapter.setOnItemClickedListener(new StockListAdapter.OnItemClickedListener() {
             @Override
             public void onItemClicked(int position) {
@@ -100,14 +96,13 @@ public class StockListFragment extends BaseFragment implements StockListContract
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.d("StockListFragment", "onRefresh");
-                mPresenter.loadStocks();
+                mPresenter.loadStocks(true);
             }
         });
         mAdapter.setOnLoadMoreListener(new LoadMoreWrapper.OnLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                if (mDatas.size() > 0) {
+                if (mData.size() > 0) {
                     mPresenter.loadMore();
                 }
             }
@@ -115,8 +110,8 @@ public class StockListFragment extends BaseFragment implements StockListContract
     }
 
     private void toStockDetailActivity(int position) {
-        if (mDatas != null) {
-            StockBean bean = mDatas.get(position);
+        if (mData != null) {
+            StockBean bean = mData.get(position);
             Intent intent = new Intent(getContext(), StockDetailActivity.class);
             intent.putExtra("gid", bean.gid);
             startActivity(intent);
@@ -125,20 +120,18 @@ public class StockListFragment extends BaseFragment implements StockListContract
 
     @Override
     public void showStocks(List<StockBean> stocks) {
-        Log.d("StockListFragment", "showStocks");
-        mDatas.clear();
-        mDatas.addAll(stocks);
+        mData.clear();
+        mData.addAll(stocks);
         mAdapter.showLoadMore();
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void appendStocks(List<StockBean> stocks) {
-        Log.d("StockListFragment", "appendStocks");
         if (stocks == null || stocks.size() == 0) {
             mAdapter.hideLoadMore();
         } else {
-            mDatas.addAll(stocks);
+            mData.addAll(stocks);
         }
         if (!mRecyclerView.isComputingLayout() && mRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
             mAdapter.notifyDataSetChanged();

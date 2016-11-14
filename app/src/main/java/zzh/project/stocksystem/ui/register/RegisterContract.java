@@ -1,10 +1,10 @@
 package zzh.project.stocksystem.ui.register;
 
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface RegisterContract {
-    interface View extends BaseView {
+    interface View extends IView {
         // 获取用户名
         String getUsername();
 
@@ -20,7 +20,7 @@ interface RegisterContract {
         void close();
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 注册
         void register();
     }

@@ -4,19 +4,11 @@ import java.util.List;
 
 import zzh.project.stocksystem.bean.StockBean;
 import zzh.project.stocksystem.bean.StockListType;
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface StockListContract {
-    interface Presenter extends BasePresenter {
-        // 加载股票数据
-        void loadStocks();
-
-        // 加载更多
-        void loadMore();
-    }
-
-    interface View extends BaseView {
+    interface View extends IView {
         // 显示股票数据
         void showStocks(List<StockBean> stocks);
 
@@ -28,5 +20,13 @@ interface StockListContract {
 
         // 获取股票列表类型
         StockListType getType();
+    }
+
+    interface Presenter extends IPresenter {
+        // 加载股票数据
+        void loadStocks(boolean manual);
+
+        // 加载更多
+        void loadMore();
     }
 }

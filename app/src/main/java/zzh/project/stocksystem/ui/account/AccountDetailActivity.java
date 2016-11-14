@@ -12,9 +12,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.bean.AccountBean;
-import zzh.project.stocksystem.ui.base.BaseActivity;
+import zzh.project.stocksystem.ui.base.BaseStackActivity;
 
-public class AccountDetailActivity extends BaseActivity {
+public class AccountDetailActivity extends BaseStackActivity {
     public static final String ARGUMENT_ACCOUNT = "account";
 
     @BindView(R.id.tv_AccountDetail_CardNum)

@@ -1,55 +1,63 @@
 package zzh.project.stocksystem.ui.login;
 
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import zzh.project.stocksystem.bean.AccessToken;
-import zzh.project.stocksystem.model.Callback2;
+import zzh.project.stocksystem.helper.JPushHelper;
+import zzh.project.stocksystem.helper.MsgHelper;
 import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.ui.base.BasePresenter;
 import zzh.project.stocksystem.util.Md5Util;
 
-public class LoginPresenter implements LoginContract.Presenter {
-    public static final String TAG = LoginPresenter.class.getSimpleName();
-    private LoginContract.View mView;
+class LoginPresenter extends BasePresenter<LoginContract.View> implements LoginContract.Presenter {
     private UserModelImpl mUserModel;
 
-    public LoginPresenter(LoginContract.View view) {
-        mView = view;
+    LoginPresenter(LoginContract.View view) {
+        super(view);
         mUserModel = UserModelImpl.getInstance();
     }
 
     @Override
     public void login() {
-        final String username = mView.getUsername().trim();
-        String password = mView.getPassword().trim();
-        password = Md5Util.toMD5(password);
+        final String username = mView.getUsername();
+        final String password = Md5Util.toMD5(mView.getPassword());
         mUserModel.setHistoryUser(username);
+
         mView.showLoading();
-        mUserModel.login(username, password, new Callback2<AccessToken, String>() {
+        mSubscription.clear();
+        Subscription subscription = mUserModel.login(username, password).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<AccessToken>() {
             @Override
-            public void onSuccess(AccessToken accessToken) {
-                mUserModel.saveAccessToken(accessToken);
+            public void onCompleted() {
                 if (mView != null && mView.isActive()) {
                     mView.hideLoading();
-                    mView.toMainActivity();
                 }
             }
 
             @Override
-            public void onError(String errMsg) {
+            public void onError(Throwable e) {
                 if (mView != null && mView.isActive()) {
                     mView.hideLoading();
-                    mView.showErrorMessage(errMsg);
+                    mView.showErrorMessage(MsgHelper.getErrorMsg(e));
+                }
+            }
+
+            @Override
+            public void onNext(AccessToken accessToken) {
+                if (mView != null && mView.isActive()) {
+                    mView.hideLoading();
+                    mUserModel.saveAccessToken(accessToken);
+                    mView.toMainActivity();
+                    JPushHelper.setAlias(username);
                 }
             }
         });
+        mSubscription.add(subscription);
     }
 
     @Override
-    public void start() {
+    public void doFirst() {
         String history = mUserModel.getHistoryUser();
         mView.setUsername(history);
-    }
-
-    @Override
-    public void destroy() {
-        mView = null;
     }
 }

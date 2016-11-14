@@ -88,9 +88,11 @@ public class UserModelImpl implements UserModel {
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "login get resp failed, " + e.getClass() + ":" + e.getMessage());
+                        subscriber.onError(e);
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, "login gen param failed, " + e.getClass() + ":" + e.getMessage());
+                    subscriber.onError(e);
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).map(new Func1<JSONObject, AccessToken>() {
@@ -121,7 +123,7 @@ public class UserModelImpl implements UserModel {
         JSONObject obj = requestFuture.get();
         int errcode = obj.optInt("errcode", -1);
         if (errcode != ServerErrorCode.SUCCESS) {
-            throw new StockSystemException("该用户已存在");
+            throw new StockSystemException(obj.optString("errmsg"));
         }
     }
 
@@ -287,7 +289,7 @@ public class UserModelImpl implements UserModel {
                     if (errcode == ServerErrorCode.SUCCESS && obj.has("data")) {
                         subscriber.onNext(obj.get("data"));
                         subscriber.onCompleted();
-                    } else if (errcode == ServerErrorCode.ACCESS_TOKEN_EXPIRES) {
+                    } else {
                         subscriber.onError(new StockSystemException(obj.get("errmsg").getAsString()));
                     }
                 } catch (Exception e) {

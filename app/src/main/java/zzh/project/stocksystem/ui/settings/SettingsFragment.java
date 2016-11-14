@@ -1,5 +1,6 @@
 package zzh.project.stocksystem.ui.settings;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,16 +19,13 @@ import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.ui.base.BaseFragment;
 import zzh.project.stocksystem.ui.login.LoginActivity;
 
-public class SettingsFragment extends BaseFragment implements SettingsContract.View {
-
-    private SettingsContract.Presenter mPresenter;
+public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> implements SettingsContract.View {
     @BindView(R.id.sw_Settings_Push)
     SwitchCompat mPushSwitch;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPresenter = new SettingsPresenter(this);
+    public SettingsContract.Presenter createPresenter() {
+        return new SettingsPresenter(this);
     }
 
     @Override
@@ -50,7 +48,7 @@ public class SettingsFragment extends BaseFragment implements SettingsContract.V
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mPresenter.subscribe();
     }
 
     @Override
@@ -85,8 +83,9 @@ public class SettingsFragment extends BaseFragment implements SettingsContract.V
 
     @Override
     public void toLoginActivity() {
+        getActivity().setResult(Activity.RESULT_OK); // 这里只是随便带一个参数标记一下
+        getActivity().finish();
         Intent intent = new Intent(getContext(), LoginActivity.class);
         startActivity(intent);
-        getActivity().finish();
     }
 }

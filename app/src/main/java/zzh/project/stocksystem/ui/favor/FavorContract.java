@@ -1,16 +1,11 @@
 package zzh.project.stocksystem.ui.favor;
 
-import java.util.List;
-
 import zzh.project.stocksystem.bean.StockBean;
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface FavorContract {
-    interface View extends BaseView {
-        // 显示关注的股票列表
-        void showFavorStock(List<StockBean> stockBeen);
-
+    interface View extends IView {
         // 追加股票
         void appendFavorStock(StockBean stockBean);
 
@@ -21,8 +16,8 @@ interface FavorContract {
         void setLoadingIndicator(boolean active);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 加载关注列表
-        void loadFavorList();
+        void loadFavorList(boolean manual);
     }
 }

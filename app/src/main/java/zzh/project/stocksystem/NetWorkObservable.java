@@ -26,7 +26,7 @@ public class NetWorkObservable extends Observable<NetWorkObservable.NetWorkObser
         // 获取程序启动时的网络状态
         mConnectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         mIsNetWorkActive = isGprsOrWifiConnected();
-        if (MyApplication.DEBUG) {
+        if (EnvConst.DEBUG) {
             Log.d(TAG, "mIsNetWorkActive=" + mIsNetWorkActive);
         }
         // 注册网络监听广播

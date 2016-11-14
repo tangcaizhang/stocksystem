@@ -1,10 +1,10 @@
 package zzh.project.stocksystem.ui.login;
 
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface LoginContract {
-    interface View extends BaseView {
+    interface View extends IView {
         // 获取用户名
         String getUsername();
 
@@ -23,7 +23,7 @@ interface LoginContract {
         void toMainActivity();
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 登陆
         void login();
     }

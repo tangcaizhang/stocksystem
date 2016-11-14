@@ -1,10 +1,10 @@
 package zzh.project.stocksystem.ui.settings;
 
-import zzh.project.stocksystem.ui.base.BasePresenter;
-import zzh.project.stocksystem.ui.base.BaseView;
+import zzh.project.stocksystem.ui.base.IPresenter;
+import zzh.project.stocksystem.ui.base.IView;
 
 interface SettingsContract {
-    interface View extends BaseView {
+    interface View extends IView {
         // 切换推送提示开关
         void switchPush(boolean enable);
 
@@ -12,7 +12,7 @@ interface SettingsContract {
         void toLoginActivity();
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends IPresenter {
         // 启用推送
         void enablePush();
 

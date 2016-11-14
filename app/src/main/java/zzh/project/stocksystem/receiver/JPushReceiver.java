@@ -7,6 +7,9 @@ import android.util.Log;
 
 import zzh.project.stocksystem.ui.MainActivity;
 
+/**
+ * 自定义JPush广播处理
+ */
 public class JPushReceiver extends BroadcastReceiver {
     private static final String TAG = JPushReceiver.class.getSimpleName();
 
