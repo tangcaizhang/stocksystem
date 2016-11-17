@@ -17,8 +17,9 @@
 使用泛型基类减少部分冗余代码。<br/>
 
 ####Future
+持久层的例子(待完善)<br/>
+更新下载的例子(待完善)<br/>
 单间测试架构(待完善)<br/>
-一个持久层的实例(待完善)
 
 ####References
 *googlesamples* https://github.com/googlesamples/android-architecture<br/>
