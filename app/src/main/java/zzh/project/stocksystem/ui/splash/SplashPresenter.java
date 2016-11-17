@@ -9,6 +9,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import zzh.project.stocksystem.helper.JPushHelper;
 import zzh.project.stocksystem.model.impl.UserModelImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
@@ -69,6 +70,7 @@ class SplashPresenter extends BasePresenter<SplashContract.View> implements Spla
                     public void run() {
                         if (bSucc) {
                             mView.toMainActivity();
+                            JPushHelper.setAlias(mUserModel.getHistoryUser());
                         } else {
                             mView.toLoginActivity();
                         }

@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.nostra13.universalimageloader.cache.disc.impl.TotalSizeLimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.MemoryCacheAware;
@@ -23,6 +24,7 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import java.io.File;
 
 import cn.jpush.android.api.JPushInterface;
+import zzh.project.stocksystem.db.dao.NewsDao;
 import zzh.project.stocksystem.helper.JPushHelper;
 import zzh.project.stocksystem.model.impl.SettingsModelImpl;
 import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
@@ -57,6 +59,8 @@ public class MyApplication extends Application {
         } else {
             SettingsModelImpl.getInstance().disablePush();
         }
+
+        NewsDao.getInstance();
     }
 
     private NetWorkObservable mNetWorkObservable;
@@ -117,17 +121,15 @@ public class MyApplication extends Application {
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config);
 
-        if (!EnvConst.DEBUG) {
+//        if (!EnvConst.DEBUG) {
             L.disableLogging();
-        }
+//        }
     }
 
     /********************** 初始化jpush ***************/
     private void initJPush(Context context) {
         JPushInterface.setDebugMode(EnvConst.DEBUG);
         JPushInterface.init(context);
-        // 修改别名，防止收到推送
-        JPushHelper.setAlias("null");
     }
 
     /********************** 初始化全局异常捕获 ***************/
@@ -153,6 +155,7 @@ public class MyApplication extends Application {
         StockModelJuheImpl.getInstance().destroy();
         ImageLoader.getInstance().destroy();
         FastVolley.getInstance(this).stop();
+        OpenHelperManager.releaseHelper();
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 }
