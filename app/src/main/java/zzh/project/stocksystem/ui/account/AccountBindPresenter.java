@@ -7,17 +7,17 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.UserModel;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.UserManager;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 import zzh.project.stocksystem.util.Md5Util;
 
 class AccountBindPresenter extends BasePresenter<AccountBindContract.View> implements AccountBindContract.Presenter {
-    private UserModel mUserModel;
+    private UserManager mUserManager;
 
     AccountBindPresenter(AccountBindContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
+        mUserManager = UserManagerImpl.getInstance();
     }
 
     @Override
@@ -33,7 +33,7 @@ class AccountBindPresenter extends BasePresenter<AccountBindContract.View> imple
                 accountBean.realName = mView.getRealName();
                 accountBean.password = Md5Util.toMD5(mView.getPassword());
                 try {
-                    mUserModel.bindAccount(accountBean);
+                    mUserManager.bindAccount(accountBean);
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);

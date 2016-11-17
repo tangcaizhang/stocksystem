@@ -1,6 +1,6 @@
 package zzh.project.stocksystem.model;
 
-public interface SettingsModel {
+public interface SettingsManager {
     /**
      * 启用推送
      */

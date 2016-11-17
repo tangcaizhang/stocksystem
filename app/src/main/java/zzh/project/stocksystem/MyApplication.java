@@ -25,10 +25,9 @@ import java.io.File;
 
 import cn.jpush.android.api.JPushInterface;
 import zzh.project.stocksystem.db.dao.NewsDao;
-import zzh.project.stocksystem.helper.JPushHelper;
-import zzh.project.stocksystem.model.impl.SettingsModelImpl;
-import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.impl.SettingsManagerImpl;
+import zzh.project.stocksystem.model.impl.StockManagerJuheImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.volley.FastVolley;
 
 public class MyApplication extends Application {
@@ -54,10 +53,10 @@ public class MyApplication extends Application {
         initGlobalUncaughtExceptionHandler();
 
         // 初始设置项
-        if (SettingsModelImpl.getInstance().isEnablePush()) {
-            SettingsModelImpl.getInstance().enablePush();
+        if (SettingsManagerImpl.getInstance().isEnablePush()) {
+            SettingsManagerImpl.getInstance().enablePush();
         } else {
-            SettingsModelImpl.getInstance().disablePush();
+            SettingsManagerImpl.getInstance().disablePush();
         }
 
         NewsDao.getInstance();
@@ -151,8 +150,8 @@ public class MyApplication extends Application {
         if (mNetWorkObservable != null) {
             mNetWorkObservable.release();
         }
-        UserModelImpl.getInstance().destroy();
-        StockModelJuheImpl.getInstance().destroy();
+        UserManagerImpl.getInstance().destroy();
+        StockManagerJuheImpl.getInstance().destroy();
         ImageLoader.getInstance().destroy();
         FastVolley.getInstance(this).stop();
         OpenHelperManager.releaseHelper();

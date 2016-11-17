@@ -31,30 +31,30 @@ import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.bean.HoldStockBean;
 import zzh.project.stocksystem.bean.TradeBean;
 import zzh.project.stocksystem.bean.UserBean;
-import zzh.project.stocksystem.model.UserModel;
+import zzh.project.stocksystem.model.UserManager;
 import zzh.project.stocksystem.model.exception.StockSystemException;
 import zzh.project.stocksystem.sp.UserSp;
 import zzh.project.stocksystem.volley.FastVolley;
 import zzh.project.stocksystem.volley.GsonObjectRequest;
 
-public class UserModelImpl implements UserModel {
+public class UserManagerImpl implements UserManager {
     private final String TAG = this.getClass().getSimpleName();
-    private static UserModelImpl sInstance;
+    private static UserManagerImpl sInstance;
     private UserSp mUserSp;
     private FastVolley mFastVolley;
     private String HASHCODE;
     private AccessToken mAccessToken;
 
-    private UserModelImpl(Context context) {
+    private UserManagerImpl(Context context) {
         HASHCODE = Integer.toHexString(this.hashCode()) + "@";
         mUserSp = UserSp.getInstance(context);
         mFastVolley = FastVolley.getInstance(context);
         mAccessToken = getAccessToken();
     }
 
-    public static UserModelImpl getInstance() {
+    public static UserManagerImpl getInstance() {
         if (sInstance == null) {
-            sInstance = new UserModelImpl(MyApplication.getInstance());
+            sInstance = new UserManagerImpl(MyApplication.getInstance());
         }
         return sInstance;
     }

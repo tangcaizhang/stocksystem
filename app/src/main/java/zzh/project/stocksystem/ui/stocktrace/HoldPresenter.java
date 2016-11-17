@@ -11,20 +11,20 @@ import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.HoldStockBean;
 import zzh.project.stocksystem.bean.StockDetailBean;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.StockModel;
-import zzh.project.stocksystem.model.UserModel;
-import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.StockManager;
+import zzh.project.stocksystem.model.UserManager;
+import zzh.project.stocksystem.model.impl.StockManagerJuheImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
 class HoldPresenter extends BasePresenter<HoldContract.View> implements HoldContract.Presenter {
-    private UserModel mUserModel;
-    private StockModel mStockModel;
+    private UserManager mUserManager;
+    private StockManager mStockManager;
 
     HoldPresenter(HoldContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
-        mStockModel = StockModelJuheImpl.getInstance();
+        mUserManager = UserManagerImpl.getInstance();
+        mStockManager = StockManagerJuheImpl.getInstance();
     }
 
     @Override
@@ -39,7 +39,7 @@ class HoldPresenter extends BasePresenter<HoldContract.View> implements HoldCont
         }
         mView.clearAllHoldStock();
         // 这里任务链有点复杂
-        Subscription subscription = mUserModel.listHoldStock() // 拿到的HoldStockBean数据不全
+        Subscription subscription = mUserManager.listHoldStock() // 拿到的HoldStockBean数据不全
                 .observeOn(Schedulers.io()).flatMap(new Func1<List<HoldStockBean>, Observable<HoldStockBean>>() { // 切换到单一遍历
                     @Override
                     public Observable<HoldStockBean> call(List<HoldStockBean> holdStockBeen) {
@@ -48,7 +48,7 @@ class HoldPresenter extends BasePresenter<HoldContract.View> implements HoldCont
                 }).observeOn(Schedulers.io()).flatMap(new Func1<HoldStockBean, Observable<HoldStockBean>>() { // 转换成具有详细信息的HoldStockBean数据集
                     @Override
                     public Observable<HoldStockBean> call(final HoldStockBean holdStockBean) {
-                        return mStockModel.getDetail(holdStockBean.gid)
+                        return mStockManager.getDetail(holdStockBean.gid)
                                 .observeOn(Schedulers.io()).map(new Func1<StockDetailBean, HoldStockBean>() {
                                     @Override
                                     public HoldStockBean call(StockDetailBean detailBean) {
@@ -109,7 +109,7 @@ class HoldPresenter extends BasePresenter<HoldContract.View> implements HoldCont
                 String name = selected.name;
                 float uPrice = Float.parseFloat(selected.nowPri);
                 try {
-                    mUserModel.sell(gid, name, uPrice, amount);
+                    mUserManager.sell(gid, name, uPrice, amount);
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);

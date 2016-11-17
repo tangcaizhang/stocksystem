@@ -6,17 +6,17 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.UserModel;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.UserManager;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 import zzh.project.stocksystem.util.Md5Util;
 
 class RechargePresenter extends BasePresenter<RechargeContract.View> implements RechargeContract.Presenter {
-    private UserModel mUserModel;
+    private UserManager mUserManager;
 
     RechargePresenter(RechargeContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
+        mUserManager = UserManagerImpl.getInstance();
     }
 
     @Override
@@ -35,7 +35,7 @@ class RechargePresenter extends BasePresenter<RechargeContract.View> implements 
                     String cardNum = mView.getCardNum();
                     String pass = Md5Util.toMD5(mView.getPassword());
                     float money = mView.getMoney();
-                    mUserModel.recharge(cardNum, pass, money);
+                    mUserManager.recharge(cardNum, pass, money);
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);

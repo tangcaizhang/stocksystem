@@ -18,7 +18,7 @@ import zzh.project.stocksystem.ApiUrl;
 import zzh.project.stocksystem.MyApplication;
 import zzh.project.stocksystem.bean.StockBean;
 import zzh.project.stocksystem.bean.StockDetailBean;
-import zzh.project.stocksystem.model.StockModel;
+import zzh.project.stocksystem.model.StockManager;
 import zzh.project.stocksystem.model.exception.StockSystemException;
 import zzh.project.stocksystem.model.impl.juhe.JuheDetailRespHK;
 import zzh.project.stocksystem.model.impl.juhe.JuheDetailRespHS;
@@ -30,15 +30,15 @@ import zzh.project.stocksystem.model.impl.juhe.JuheListRespUSA;
 import zzh.project.stocksystem.volley.FastVolley;
 import zzh.project.stocksystem.volley.GsonObjectRequest;
 
-public class StockModelJuheImpl implements StockModel {
+public class StockManagerJuheImpl implements StockManager {
     private final String TAG = this.getClass().getSimpleName();
-    private static StockModelJuheImpl sInstance;
+    private static StockManagerJuheImpl sInstance;
     private FastVolley mFastVolley;
     private Gson mGson;
     private String HASHCODE;
     private String mAppKey;
 
-    private StockModelJuheImpl(Context context) {
+    private StockManagerJuheImpl(Context context) {
         HASHCODE = Integer.toHexString(this.hashCode()) + "@";
         mFastVolley = FastVolley.getInstance(context);
         mGson = new Gson();
@@ -51,9 +51,9 @@ public class StockModelJuheImpl implements StockModel {
         }
     }
 
-    public static StockModelJuheImpl getInstance() {
+    public static StockManagerJuheImpl getInstance() {
         if (sInstance == null) {
-            sInstance = new StockModelJuheImpl(MyApplication.getInstance());
+            sInstance = new StockManagerJuheImpl(MyApplication.getInstance());
         }
         return sInstance;
     }

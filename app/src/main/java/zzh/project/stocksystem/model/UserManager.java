@@ -9,7 +9,7 @@ import zzh.project.stocksystem.bean.HoldStockBean;
 import zzh.project.stocksystem.bean.TradeBean;
 import zzh.project.stocksystem.bean.UserBean;
 
-public interface UserModel {
+public interface UserManager {
 
     // 获取历史用户名
     String getHistoryUser();

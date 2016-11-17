@@ -10,17 +10,17 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.helper.JPushHelper;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
 class SplashPresenter extends BasePresenter<SplashContract.View> implements SplashContract.Presenter {
-    private UserModelImpl mUserModel;
+    private UserManagerImpl mUserModel;
     private Handler mHandler = new Handler();
     private Runnable mGoTask;
 
     SplashPresenter(SplashContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
+        mUserModel = UserManagerImpl.getInstance();
     }
 
     @Override

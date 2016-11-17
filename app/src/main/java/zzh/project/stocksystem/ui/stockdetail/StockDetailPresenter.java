@@ -10,22 +10,22 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.StockDetailBean;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.StockModel;
-import zzh.project.stocksystem.model.UserModel;
-import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.StockManager;
+import zzh.project.stocksystem.model.UserManager;
+import zzh.project.stocksystem.model.impl.StockManagerJuheImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
 class StockDetailPresenter extends BasePresenter<StockDetailContract.View> implements StockDetailContract.Presenter {
-    private StockModel mStockModel;
-    private UserModel mUserModel;
+    private StockManager mStockManager;
+    private UserManager mUserManager;
     private boolean mGidExists;
     private StockDetailBean mStockDetail;
 
     StockDetailPresenter(StockDetailContract.View view) {
         super(view);
-        mStockModel = StockModelJuheImpl.getInstance();
-        mUserModel = UserModelImpl.getInstance();
+        mStockManager = StockManagerJuheImpl.getInstance();
+        mUserManager = UserManagerImpl.getInstance();
     }
 
     @Override
@@ -37,7 +37,7 @@ class StockDetailPresenter extends BasePresenter<StockDetailContract.View> imple
     @Override
     public void loadStockDetail() {
         mView.showLoading();
-        mStockModel.getDetail(mView.getGid()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<StockDetailBean>() {
+        mStockManager.getDetail(mView.getGid()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<StockDetailBean>() {
             @Override
             public void onCompleted() {
                 if (mView != null && mView.isActive()) {
@@ -71,7 +71,7 @@ class StockDetailPresenter extends BasePresenter<StockDetailContract.View> imple
 
     private void checkFavor() {
         // TODO 新增接口/缓存来检测单一
-        Subscription subscription = mUserModel.listFavor().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<String>>() {
+        Subscription subscription = mUserManager.listFavor().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<String>>() {
             @Override
             public void onCompleted() {
 
@@ -103,7 +103,7 @@ class StockDetailPresenter extends BasePresenter<StockDetailContract.View> imple
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mUserModel.favor(mView.getGid());
+                    mUserManager.favor(mView.getGid());
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);
@@ -144,7 +144,7 @@ class StockDetailPresenter extends BasePresenter<StockDetailContract.View> imple
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mUserModel.unFavor(mView.getGid());
+                    mUserManager.unFavor(mView.getGid());
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);
@@ -185,7 +185,7 @@ class StockDetailPresenter extends BasePresenter<StockDetailContract.View> imple
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mUserModel.buy(mView.getGid(), mStockDetail.name, Float.parseFloat(mStockDetail.nowPri), num);
+                    mUserManager.buy(mView.getGid(), mStockDetail.name, Float.parseFloat(mStockDetail.nowPri), num);
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);

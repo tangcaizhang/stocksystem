@@ -8,17 +8,17 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.StockBean;
 import zzh.project.stocksystem.bean.StockListType;
-import zzh.project.stocksystem.model.StockModel;
-import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
+import zzh.project.stocksystem.model.StockManager;
+import zzh.project.stocksystem.model.impl.StockManagerJuheImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
 class StockListPresenter extends BasePresenter<StockListContract.View> implements StockListContract.Presenter {
-    private StockModel mStockModel;
+    private StockManager mStockManager;
     private int mCurPage = 0;
 
     StockListPresenter(StockListContract.View view) {
         super(view);
-        mStockModel = StockModelJuheImpl.getInstance();
+        mStockManager = StockManagerJuheImpl.getInstance();
     }
 
     @Override
@@ -85,13 +85,13 @@ class StockListPresenter extends BasePresenter<StockListContract.View> implement
     private void loadStocks(int page, Subscriber<List<StockBean>> subscriber) {
         Subscription subscription = null;
         if (mView.getType() == StockListType.SH) {
-            subscription = mStockModel.findAllSH(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+            subscription = mStockManager.findAllSH(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
         } else if (mView.getType() == StockListType.SZ) {
-            subscription = mStockModel.findAllSZ(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+            subscription = mStockManager.findAllSZ(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
         } else if (mView.getType() == StockListType.HK) {
-            subscription = mStockModel.findAllHK(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+            subscription = mStockManager.findAllHK(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
         } else if (mView.getType() == StockListType.USA) {
-            subscription = mStockModel.findAllUS(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+            subscription = mStockManager.findAllUS(page).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
         }
         if (subscription != null) {
             mSubscription.add(subscription);

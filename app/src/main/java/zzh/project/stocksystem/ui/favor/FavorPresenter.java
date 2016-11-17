@@ -11,20 +11,20 @@ import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.StockBean;
 import zzh.project.stocksystem.bean.StockDetailBean;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.StockModel;
-import zzh.project.stocksystem.model.UserModel;
-import zzh.project.stocksystem.model.impl.StockModelJuheImpl;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.StockManager;
+import zzh.project.stocksystem.model.UserManager;
+import zzh.project.stocksystem.model.impl.StockManagerJuheImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
 class FavorPresenter extends BasePresenter<FavorContract.View> implements FavorContract.Presenter {
-    private UserModel mUserModel;
-    private StockModel mStockModel;
+    private UserManager mUserManager;
+    private StockManager mStockManager;
 
     FavorPresenter(FavorContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
-        mStockModel = StockModelJuheImpl.getInstance();
+        mUserManager = UserManagerImpl.getInstance();
+        mStockManager = StockManagerJuheImpl.getInstance();
     }
 
     @Override
@@ -39,14 +39,14 @@ class FavorPresenter extends BasePresenter<FavorContract.View> implements FavorC
         }
         mView.clearAllFavorStock();
         mSubscription.clear();
-        Subscription subscription = mUserModel.listFavor().observeOn(Schedulers.computation())
+        Subscription subscription = mUserManager.listFavor().observeOn(Schedulers.computation())
                 .flatMap(new Func1<List<String>, Observable<StockDetailBean>>() {
                     @Override
                     public Observable<StockDetailBean> call(List<String> strings) {
                         return Observable.from(strings).flatMap(new Func1<String, Observable<StockDetailBean>>() {
                             @Override
                             public Observable<StockDetailBean> call(String s) {
-                                return mStockModel.getDetail(s);
+                                return mStockManager.getDetail(s);
                             }
                         });
                     }

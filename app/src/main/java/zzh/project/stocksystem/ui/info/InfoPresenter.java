@@ -6,18 +6,18 @@ import rx.android.schedulers.AndroidSchedulers;
 import zzh.project.stocksystem.bean.AccountBean;
 import zzh.project.stocksystem.bean.UserBean;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.UserModel;
+import zzh.project.stocksystem.model.UserManager;
 import zzh.project.stocksystem.model.exception.StockSystemException;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
 class InfoPresenter extends BasePresenter<InfoContract.View> implements InfoContract.Presenter {
-    private UserModel mUserModel;
+    private UserManager mUserManager;
     private AccountBean mAccountBean;
 
     InfoPresenter(InfoContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
+        mUserManager = UserManagerImpl.getInstance();
     }
 
     @Override
@@ -25,7 +25,7 @@ class InfoPresenter extends BasePresenter<InfoContract.View> implements InfoCont
         if (manual) {
             mView.setLoadingIndicator(true);
         }
-        Subscription subscription = mUserModel.getInfo().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<UserBean>() {
+        Subscription subscription = mUserManager.getInfo().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<UserBean>() {
             @Override
             public void onCompleted() {
                 if (manual && mView != null && mView.isActive()) {
@@ -58,7 +58,7 @@ class InfoPresenter extends BasePresenter<InfoContract.View> implements InfoCont
         if (manual) {
             mView.setLoadingIndicator(true);
         }
-        Subscription subscription = mUserModel.getAccount().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<AccountBean>() {
+        Subscription subscription = mUserManager.getAccount().observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<AccountBean>() {
             @Override
             public void onCompleted() {
                 if (manual && mView != null && mView.isActive()) {

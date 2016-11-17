@@ -8,16 +8,16 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.TradeBean;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.UserModel;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.UserManager;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
 class TradeListPresenter extends BasePresenter<TradeListContract.View> implements TradeListContract.Presenter {
-    private UserModel mUserModel;
+    private UserManager mUserManager;
 
     TradeListPresenter(TradeListContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
+        mUserManager = UserManagerImpl.getInstance();
     }
 
     @Override
@@ -31,7 +31,7 @@ class TradeListPresenter extends BasePresenter<TradeListContract.View> implement
             mView.setLoadingIndicator(true);
         }
         mSubscription.clear();
-        Subscription subscription = mUserModel.listTrade().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<TradeBean>>() {
+        Subscription subscription = mUserManager.listTrade().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<TradeBean>>() {
             @Override
             public void onCompleted() {
                 if (manual && mView != null && mView.isActive()) {

@@ -8,16 +8,16 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.bean.UserBean;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 import zzh.project.stocksystem.util.Md5Util;
 
 class RegisterPresenter extends BasePresenter<RegisterContract.View> implements RegisterContract.Presenter {
-    private UserModelImpl mUserModel;
+    private UserManagerImpl mUserModel;
 
     RegisterPresenter(RegisterContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
+        mUserModel = UserManagerImpl.getInstance();
     }
 
     @Override

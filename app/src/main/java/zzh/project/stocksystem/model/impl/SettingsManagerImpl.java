@@ -4,21 +4,21 @@ import android.content.Context;
 
 import cn.jpush.android.api.JPushInterface;
 import zzh.project.stocksystem.MyApplication;
-import zzh.project.stocksystem.model.SettingsModel;
+import zzh.project.stocksystem.model.SettingsManager;
 import zzh.project.stocksystem.sp.SettingSp;
 
-public class SettingsModelImpl implements SettingsModel {
+public class SettingsManagerImpl implements SettingsManager {
     private final String TAG = this.getClass().getSimpleName();
-    private static SettingsModelImpl sInstance;
+    private static SettingsManagerImpl sInstance;
     private SettingSp mSettingSp;
 
-    private SettingsModelImpl(Context context) {
+    private SettingsManagerImpl(Context context) {
         mSettingSp = SettingSp.getInstance(context);
     }
 
-    public static SettingsModelImpl getInstance() {
+    public static SettingsManagerImpl getInstance() {
         if (sInstance == null) {
-            sInstance = new SettingsModelImpl(MyApplication.getInstance());
+            sInstance = new SettingsManagerImpl(MyApplication.getInstance());
         }
         return sInstance;
     }

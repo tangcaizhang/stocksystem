@@ -6,7 +6,7 @@ import rx.Observable;
 import zzh.project.stocksystem.bean.StockBean;
 import zzh.project.stocksystem.bean.StockDetailBean;
 
-public interface StockModel {
+public interface StockManager {
     /**
      * 查询股票详情
      */

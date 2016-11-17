@@ -6,16 +6,16 @@ import rx.android.schedulers.AndroidSchedulers;
 import zzh.project.stocksystem.bean.AccessToken;
 import zzh.project.stocksystem.helper.JPushHelper;
 import zzh.project.stocksystem.helper.MsgHelper;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 import zzh.project.stocksystem.util.Md5Util;
 
 class LoginPresenter extends BasePresenter<LoginContract.View> implements LoginContract.Presenter {
-    private UserModelImpl mUserModel;
+    private UserManagerImpl mUserModel;
 
     LoginPresenter(LoginContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
+        mUserModel = UserManagerImpl.getInstance();
     }
 
     @Override

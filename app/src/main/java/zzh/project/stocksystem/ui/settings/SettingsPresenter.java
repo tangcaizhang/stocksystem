@@ -6,20 +6,20 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import zzh.project.stocksystem.helper.JPushHelper;
-import zzh.project.stocksystem.model.SettingsModel;
-import zzh.project.stocksystem.model.UserModel;
-import zzh.project.stocksystem.model.impl.SettingsModelImpl;
-import zzh.project.stocksystem.model.impl.UserModelImpl;
+import zzh.project.stocksystem.model.SettingsManager;
+import zzh.project.stocksystem.model.UserManager;
+import zzh.project.stocksystem.model.impl.SettingsManagerImpl;
+import zzh.project.stocksystem.model.impl.UserManagerImpl;
 import zzh.project.stocksystem.ui.base.BasePresenter;
 
 class SettingsPresenter extends BasePresenter<SettingsContract.View> implements SettingsContract.Presenter {
-    private UserModel mUserModel;
-    private SettingsModel mSettingModel;
+    private UserManager mUserManager;
+    private SettingsManager mSettingManager;
 
     SettingsPresenter(SettingsContract.View view) {
         super(view);
-        mUserModel = UserModelImpl.getInstance();
-        mSettingModel = SettingsModelImpl.getInstance();
+        mUserManager = UserManagerImpl.getInstance();
+        mSettingManager = SettingsManagerImpl.getInstance();
     }
 
     @Override
@@ -27,7 +27,7 @@ class SettingsPresenter extends BasePresenter<SettingsContract.View> implements 
         Subscription subscription = Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(mSettingModel.isEnablePush());
+                subscriber.onNext(mSettingManager.isEnablePush());
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
@@ -56,7 +56,7 @@ class SettingsPresenter extends BasePresenter<SettingsContract.View> implements 
         Subscription subscription = Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                mSettingModel.enablePush();
+                mSettingManager.enablePush();
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Void>() {
@@ -85,7 +85,7 @@ class SettingsPresenter extends BasePresenter<SettingsContract.View> implements 
         Subscription subscription = Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                mSettingModel.disablePush();
+                mSettingManager.disablePush();
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Void>() {
@@ -114,7 +114,7 @@ class SettingsPresenter extends BasePresenter<SettingsContract.View> implements 
         Subscription subscription = Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                mUserModel.logout();
+                mUserManager.logout();
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Void>() {
