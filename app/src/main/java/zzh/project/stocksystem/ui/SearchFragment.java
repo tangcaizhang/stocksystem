@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +22,12 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.codetail.animation.ViewAnimationUtils;
+import zzh.project.stocksystem.EnvConst;
 import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.ui.stockdetail.StockDetailActivity;
 
 public class SearchFragment extends Fragment {
+    private static final String TAG = SearchFragment.class.getSimpleName();
     @BindView(R.id.atv_Search_Input)
     EditText mSearchTextView;
     @BindView(R.id.rfl_Search_Bar)
@@ -45,6 +48,7 @@ public class SearchFragment extends Fragment {
                 animation.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        // 打开输入法
                         mSearchTextView.requestFocus();
                         InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputManager.showSoftInput(mSearchTextView, InputMethodManager.SHOW_FORCED);
@@ -76,6 +80,31 @@ public class SearchFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "onResume");
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        close(mSearchTextView);
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "onPause");
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "onStop");
+        }
     }
 
     private void close(View v) {
