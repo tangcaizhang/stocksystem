@@ -4,16 +4,16 @@
 
 1. 基于*Material Design*的应用界面(引入了design库)。<br />
 2. 以个人见解的*MVP模式*对项目进行分层架构。<br />
-3. 集成*RxAndroid*来组织异步任务链，控制线程调度。<br />
+3. 利用*RxAndroid*组织异步任务链，简化线程调度。<br />
 4. 常用的下拉刷新(Google自带)、上拉加载、轮换图等组件。 <br />
 5. 使用鸿洋大神的[Android AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout)作为布局适配方案，原则上均可自适应。
 
-股票数据来源于  [聚合API](https://www.juhe.cn/docs/api/id/21) <br />
-推送服务来源 [极光推送](https://www.jiguang.cn)，目前对普通用户免费，对小型项目可以快速集成推送<br />
+股票数据来源于  *[聚合API](https://www.juhe.cn/docs/api/id/21)*<br />
+推送服务来源 *[极光推送](https://www.jiguang.cn)*，目前对普通用户免费，对小型项目可以快速集成推送<br />
 
-####Update
+####Update(11-14)
 重构了MVP中M层和P层的接口，现在Model层的接口统一为同步的。<br/>
-后台线程和主线程的调度都交给Presenter来做，加入RxAndroid组织异步任务链，这样逻辑清晰点、嵌套也少。<br/>
+主线程、后台线程的交叉调度和业务组织都交给Presenter来做，这样逻辑清晰点、嵌套也少。<br/>
 使用泛型基类减少部分冗余代码。<br/>
 
 ####Future
