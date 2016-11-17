@@ -4,8 +4,10 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.Toast;
 
+import zzh.project.stocksystem.EnvConst;
 import zzh.project.stocksystem.util.LoadingBuilder;
 import zzh.project.stocksystem.util.ToastUtil;
 
@@ -25,6 +27,9 @@ public abstract class BaseFragment<T extends IPresenter> extends Fragment implem
     @Override
     public void onResume() {
         super.onResume();
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "onResume");
+        }
         mPresenter.subscribe();
     }
 
@@ -32,12 +37,26 @@ public abstract class BaseFragment<T extends IPresenter> extends Fragment implem
     public void onPause() {
         mPresenter.unsubscribe();
         super.onPause();
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "onPause");
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "onStop");
+        }
     }
 
     @Override
     public void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "onDestroy");
+        }
     }
 
     @Override
