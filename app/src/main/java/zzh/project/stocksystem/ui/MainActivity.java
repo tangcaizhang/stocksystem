@@ -6,12 +6,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import zzh.project.stocksystem.EnvConst;
 import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.ui.base.BaseStackActivity;
 import zzh.project.stocksystem.ui.favor.FavorFragment;
@@ -145,6 +147,9 @@ public class MainActivity extends BaseStackActivity implements RadioGroup.OnChec
 
     @Override
     public void onBackPressed() {
+        if (EnvConst.DEBUG) {
+            Log.d(TAG, "onBackPressed");
+        }
         Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
         if (fragment != null && fragment instanceof SearchFragment) {
             getSupportFragmentManager().popBackStack();
