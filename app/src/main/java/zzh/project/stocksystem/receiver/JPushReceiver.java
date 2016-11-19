@@ -45,7 +45,7 @@ public class JPushReceiver extends BroadcastReceiver {
         }
 
         /* 通知所有注册的监听者 */
-        public void notifyChanged(String title, String message) {
+        private void notifyChanged(String title, String message) {
             synchronized (mObservers) {
                 for (int i = mObservers.size() - 1; i >= 0; i--) {
                     mObservers.get(i).onNotificationReceived(title, message);

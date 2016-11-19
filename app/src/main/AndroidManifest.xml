@@ -98,7 +98,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.account.BindActivity"
+            android:name=".ui.account.AccountBindActivity"
             android:label="绑定"
             android:screenOrientation="portrait" />
 

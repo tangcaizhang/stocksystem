@@ -58,8 +58,6 @@ public class MyApplication extends Application {
         } else {
             SettingsManagerImpl.getInstance().disablePush();
         }
-
-        NewsDao.getInstance();
     }
 
     private NetWorkObservable mNetWorkObservable;

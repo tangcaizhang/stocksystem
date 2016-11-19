@@ -29,7 +29,7 @@ abstract class BaseDao<T, ID extends Serializable> {
             try {
                 // 拿到的SQLiteHelper都是单例
                 mDao = OpenHelperManager.getHelper(MyApplication.getInstance(), SQLiteHelper.class).getDao((Class) realType);
-            } catch (SQLException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
