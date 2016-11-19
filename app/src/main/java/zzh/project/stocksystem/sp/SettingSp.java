@@ -8,6 +8,7 @@ public class SettingSp extends CommonSp {
 
     /* known key */
     private static final String KEY_PUSH = "jpush";
+    private static final String KEY_ADD_SHORTCUT = "shortcut";
 
     public static SettingSp getInstance(Context context) {
         if (instance == null) {
@@ -32,4 +33,11 @@ public class SettingSp extends CommonSp {
         setValue(KEY_PUSH, value);
     }
 
+    public boolean bAddShortcut(boolean defaultValue) {
+        return getValue(KEY_ADD_SHORTCUT, defaultValue);
+    }
+
+    public void setBAddShortcut(boolean value) {
+        setValue(KEY_ADD_SHORTCUT, value);
+    }
 }

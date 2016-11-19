@@ -27,6 +27,7 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
         android:name="zzh.project.stocksystem.MyApplication"
@@ -58,7 +59,8 @@
         <activity
             android:name=".ui.splash.SplashActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.FullScreen">
+            android:theme="@style/AppTheme.FullScreen"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,6 +71,7 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" />
 
         <activity
@@ -80,6 +83,7 @@
         <activity
             android:name=".ui.register.RegisterActivity"
             android:label="注册"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity

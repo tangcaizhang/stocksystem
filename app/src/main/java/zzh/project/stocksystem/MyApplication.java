@@ -24,7 +24,6 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
 import java.io.File;
 
 import cn.jpush.android.api.JPushInterface;
-import zzh.project.stocksystem.db.dao.NewsDao;
 import zzh.project.stocksystem.model.impl.SettingsManagerImpl;
 import zzh.project.stocksystem.model.impl.StockManagerJuheImpl;
 import zzh.project.stocksystem.model.impl.UserManagerImpl;
@@ -135,6 +134,7 @@ public class MyApplication extends Application {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 // TODO save log
+                e.printStackTrace();
                 destroy();
             }
         });

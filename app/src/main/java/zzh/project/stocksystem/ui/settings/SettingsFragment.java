@@ -83,9 +83,9 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
 
     @Override
     public void toLoginActivity() {
-        getActivity().setResult(Activity.RESULT_OK); // 这里只是随便带一个参数标记一下
-        getActivity().finish();
         Intent intent = new Intent(getContext(), LoginActivity.class);
         startActivity(intent);
+        getActivity().setResult(Activity.RESULT_OK); // 这里只是随便带一个参数标记一下
+        getActivity().finish();
     }
 }
