@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
+import zzh.project.stocksystem.EnvConst;
 import zzh.project.stocksystem.R;
 import zzh.project.stocksystem.sp.SettingSp;
 import zzh.project.stocksystem.ui.base.BaseStackActivity;
@@ -46,7 +47,7 @@ public class LoginActivity extends BaseStackActivity {
 
     // 初始化桌面快捷方式
     private void initShortcut() {
-        if (SettingSp.getInstance(this).bAddShortcut(true)) {
+        if (EnvConst.GEN_SHORTCUT && SettingSp.getInstance(this).bAddShortcut(true)) {
             SettingSp.getInstance(this).setBAddShortcut(false);
 
             new AlertDialog.Builder(this).setTitle("提示").setMessage("是否创建快捷方式")
