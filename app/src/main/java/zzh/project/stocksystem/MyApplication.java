@@ -1,9 +1,11 @@
 package zzh.project.stocksystem;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.Process;
 import android.os.StrictMode;
 import android.util.Log;
 
@@ -41,6 +43,13 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
+
+        // 初始化检测，避免多进程重复加载第三方类库
+        if (!checkProcess(this)) {
+            return;
+        }
+
+
         if (EnvConst.DEBUG) {
             Log.d(TAG, "onCreate");
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
@@ -57,6 +66,21 @@ public class MyApplication extends Application {
         } else {
             SettingsManagerImpl.getInstance().disablePush();
         }
+    }
+
+    private boolean checkProcess(Context context) {
+        ActivityManager actMgr = (ActivityManager) context
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        int pid = Process.myPid();
+        for (ActivityManager.RunningAppProcessInfo appProcess : actMgr.getRunningAppProcesses()) {
+            if (appProcess.pid == pid) {
+               String name = appProcess.processName;
+                if (name.equals(getPackageName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private NetWorkObservable mNetWorkObservable;
