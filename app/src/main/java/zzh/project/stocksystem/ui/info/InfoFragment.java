@@ -26,9 +26,8 @@ import zzh.project.stocksystem.ui.settings.SettingsActivity;
 import zzh.project.stocksystem.widget.ScrollChildSwipeRefreshLayout;
 
 public class InfoFragment extends BaseFragment<InfoContract.Presenter> implements InfoContract.View {
-    public static final int REQUEST_CODE_BIND = 0;
-    public static final int REQUEST_CODE_RECHARGE = 1;
-    public static final int REQUEST_CODE_SETTINGS = 2;
+    public static final int REQUEST_CODE_BIND = 1000;
+    public static final int REQUEST_CODE_RECHARGE = 1001;
 
     @BindView(R.id.rl_UserInfo_Refresh)
     ScrollChildSwipeRefreshLayout mRefreshLayout;
@@ -120,7 +119,7 @@ public class InfoFragment extends BaseFragment<InfoContract.Presenter> implement
     @OnClick(R.id.rl_UserInfo_Settings)
     public void toSettingsActivity() {
         Intent intent = new Intent(getContext(), SettingsActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_SETTINGS);
+        startActivity(intent);
     }
 
     @OnClick(R.id.rl_UserInfo_About)
@@ -135,8 +134,6 @@ public class InfoFragment extends BaseFragment<InfoContract.Presenter> implement
             mPresenter.loadAccount(false);
         } else if (requestCode == REQUEST_CODE_RECHARGE && resultCode == Activity.RESULT_OK) {
             mPresenter.loadUserInfo(false);
-        } else if (requestCode == REQUEST_CODE_SETTINGS && resultCode == Activity.RESULT_OK) {
-            getActivity().finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

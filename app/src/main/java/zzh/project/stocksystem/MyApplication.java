@@ -166,6 +166,10 @@ public class MyApplication extends Application {
 
     // 回收资源
     public void destroy() {
+        if (!checkProcess(this)) {
+            return;
+        }
+
         if (EnvConst.DEBUG) {
             Log.d(TAG, "destroy");
         }

@@ -1,6 +1,5 @@
 package zzh.project.stocksystem.ui.settings;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -84,8 +83,7 @@ public class SettingsFragment extends BaseFragment<SettingsContract.Presenter> i
     @Override
     public void toLoginActivity() {
         Intent intent = new Intent(getContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        getActivity().setResult(Activity.RESULT_OK); // 这里只是随便带一个参数标记一下
-        getActivity().finish();
     }
 }
