@@ -9,8 +9,8 @@ android {
         applicationId "zzh.project.stocksystem"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.2"
+        versionCode 3
+        versionName "1.21"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
